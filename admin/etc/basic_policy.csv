@@ -25,3 +25,9 @@ p, admin, ^/api/db$, POST
 p, admin, ^/api/db/\+?[1-9][0-9]*$, GET
 p, admin, ^/api/db/\+?[1-9][0-9]*$, PUT
 p, admin, ^/api/db/\+?[1-9][0-9]*$, DELETE
+
+p, admin, ^/api/dbuser, GET
+p, admin, ^/api/dbuser$, POST
+p, admin, ^/api/dbuser/\+?[1-9][0-9]*$, GET
+p, admin, ^/api/dbuser/\+?[1-9][0-9]*$, PUT
+p, admin, ^/api/dbuser/\+?[1-9][0-9]*$, DELETE
