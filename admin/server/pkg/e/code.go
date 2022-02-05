@@ -22,4 +22,9 @@ const (
 	MsgGetFailed      = 50001
 	MsgUpdateFailed   = 50002
 	MsgDeleteFailed   = 50003
+
+	DBAddFailed    = 60000
+	DBGetFailed    = 60001
+	DBUpdateFailed = 60002
+	DBDeleteFailed = 60003
 )

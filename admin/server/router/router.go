@@ -3,6 +3,7 @@ package router
 import (
 	"admin/core/log"
 	"admin/server/pkg/app"
+	"admin/server/router/api"
 	"admin/server/router/system"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -34,39 +35,48 @@ func Setup(mode string) (g *gin.Engine, err error) {
 	})
 
 	auth := authMiddleware.MiddlewareFunc
-	apis := r.Group("/system", auth())
+	systemApi := r.Group("/system", auth())
 	{
-		apis.GET("/user/refresh_token", authMiddleware.RefreshHandler)
-		apis.POST("/user/logout", authMiddleware.LogoutHandler)
-		apis.GET("/user/info", system.GetUserInfo)
+		systemApi.GET("/user/refresh_token", authMiddleware.RefreshHandler)
+		systemApi.POST("/user/logout", authMiddleware.LogoutHandler)
+		systemApi.GET("/user/info", system.GetUserInfo)
 
-		apis.POST("/user", system.AddUser)
-		apis.GET("/user", system.GetUsers)
-		apis.GET("/user/:id", system.GetUser)
-		apis.PUT("/user/:id", system.UpdateUser)
-		apis.PUT("/user", system.UpdateUserInfo)
-		apis.PUT("/user/password/:id", system.UpdateUserPassword)
-		apis.DELETE("/user/:id", system.DeleteUser)
+		systemApi.POST("/user", system.AddUser)
+		systemApi.GET("/user", system.GetUsers)
+		systemApi.GET("/user/:id", system.GetUser)
+		systemApi.PUT("/user/:id", system.UpdateUser)
+		systemApi.PUT("/user", system.UpdateUserInfo)
+		systemApi.PUT("/user/password/:id", system.UpdateUserPassword)
+		systemApi.DELETE("/user/:id", system.DeleteUser)
 
-		apis.GET("/email", system.GetEmail)
-		apis.POST("/email", system.AddEmail)
-		apis.PUT("/email/:id", system.UpdateEmail)
+		systemApi.GET("/email", system.GetEmail)
+		systemApi.POST("/email", system.AddEmail)
+		systemApi.PUT("/email/:id", system.UpdateEmail)
 
-		apis.GET("/ldap", system.GetLdap)
-		apis.POST("/ldap", system.AddLdap)
-		apis.PUT("/ldap/:id", system.UpdateLdap)
+		systemApi.GET("/ldap", system.GetLdap)
+		systemApi.POST("/ldap", system.AddLdap)
+		systemApi.PUT("/ldap/:id", system.UpdateLdap)
 
-		apis.GET("/txsms", system.GetTxsms)
-		apis.POST("/txsms", system.AddTxsms)
-		apis.PUT("/txsms/:id", system.UpdateTxsms)
+		systemApi.GET("/txsms", system.GetTxsms)
+		systemApi.POST("/txsms", system.AddTxsms)
+		systemApi.PUT("/txsms/:id", system.UpdateTxsms)
 
-		apis.POST("/msg", system.AddMsg)
-		apis.GET("/msg", system.GetMsgs)
-		apis.GET("/msg/:id", system.GetMsg)
-		apis.PUT("/msg/:id", system.UpdateMsg)
-		apis.DELETE("/msg/:id", system.DeleteMsg)
-		apis.POST("/msg/:id/user", system.SendMsg)
+		systemApi.POST("/msg", system.AddMsg)
+		systemApi.GET("/msg", system.GetMsgs)
+		systemApi.GET("/msg/:id", system.GetMsg)
+		systemApi.PUT("/msg/:id", system.UpdateMsg)
+		systemApi.DELETE("/msg/:id", system.DeleteMsg)
+		systemApi.POST("/msg/:id/user", system.SendMsg)
+
 	}
 
+	apis := r.Group("/api", auth())
+	{
+		apis.POST("/db", api.AddDB)
+		apis.GET("/db", api.GetDBs)
+		apis.GET("/db/:id", api.GetDB)
+		apis.PUT("/db/:id", api.UpdateDB)
+		apis.DELETE("/db/:id", api.DeleteDB)
+	}
 	return r, nil
 }

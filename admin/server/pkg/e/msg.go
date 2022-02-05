@@ -26,6 +26,11 @@ var MsgFlags = map[int]string{
 	MsgGetFailed:    "添加msg失败",
 	MsgUpdateFailed: "添加msg失败",
 	MsgDeleteFailed: "添加msg失败",
+
+	DBAddFailed:    "添加db失败",
+	DBGetFailed:    "添加db失败",
+	DBUpdateFailed: "添加db失败",
+	DBDeleteFailed: "添加db失败",
 }
 
 func GetMsg(code int) string {
