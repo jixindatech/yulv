@@ -19,3 +19,9 @@ p, admin, ^/system/ldap$, POST
 p, admin, ^/system/ldap/\+?[1-9][0-9]*$, PUT
 
 p, test,  ^/system/user/\+?[1-9][0-9]*$, GET
+
+p, admin, ^/api/db, GET
+p, admin, ^/api/db$, POST
+p, admin, ^/api/db/\+?[1-9][0-9]*$, GET
+p, admin, ^/api/db/\+?[1-9][0-9]*$, PUT
+p, admin, ^/api/db/\+?[1-9][0-9]*$, DELETE

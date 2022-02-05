@@ -28,15 +28,7 @@ func AddDB(c *gin.Context) {
 		errCode  = e.SUCCESS
 	)
 
-	err := app.BindUriAndValid(c, &form)
-	if err != nil {
-		httpCode = e.InvalidParams
-		errCode = e.ERROR
-		appG.Response(httpCode, errCode, err.Error(), nil)
-		return
-	}
-
-	err = app.BindAndValid(c, &form)
+	err := app.BindAndValid(c, &form)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
@@ -185,21 +177,12 @@ type queryDBForm struct {
 func GetDBs(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
-		formId   app.IDForm
 		form     queryDBForm
 		httpCode = http.StatusOK
 		errCode  = e.SUCCESS
 	)
 
-	err := app.BindUriAndValid(c, &formId)
-	if err != nil {
-		httpCode = e.InvalidParams
-		errCode = e.ERROR
-		appG.Response(httpCode, errCode, err.Error(), nil)
-		return
-	}
-
-	err = app.BindAndValid(c, &form)
+	err := app.BindAndValid(c, &form)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR

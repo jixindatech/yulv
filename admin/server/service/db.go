@@ -40,7 +40,7 @@ func (d *DB) Save() error {
 		"name":     d.Name,
 		"user":     d.User,
 		"password": d.Password,
-		"status":   d.Host,
+		"host":     d.Host,
 		"port":     d.Port,
 		"remark":   d.Remark,
 	}

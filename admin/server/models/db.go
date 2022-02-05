@@ -21,6 +21,7 @@ type DB struct {
 
 func AddDB(data map[string]interface{}) error {
 	dbUser := DB{
+		Name:     data["name"].(string),
 		User:     data["user"].(string),
 		Password: data["password"].(string),
 		Host:     data["host"].(string),
