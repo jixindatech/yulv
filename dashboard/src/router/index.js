@@ -54,7 +54,18 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/db',
+    component: Layout,
+    meta: { title: '数据库管理', icon: 'el-icon-s-help' },
+    redirect: 'db',
+    children: [{
+      path: 'db',
+      name: 'DB',
+      component: () => import('@/views/db/index'),
+      meta: { title: '数据库配置', icon: 'dashboard' }
+    }]
+  },
   {
     path: '/system',
     component: Layout,
