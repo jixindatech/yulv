@@ -36,13 +36,16 @@
       row-key="id"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        align="center"
-        reserve-selection
-        type="selection"
-        width="55"
-      />
       <el-table-column prop="name" label="数据库名称" />
+      <el-table-column prop="user" label="数据库用户" />
+      <el-table-column prop="host" label="数据库主机" />
+      <el-table-column prop="port" label="数据库端口" />
+      <el-table-column prop="updateAt" label="创建时间" width="220">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ scope.row.createdAt }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="updateAt" label="更新时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
