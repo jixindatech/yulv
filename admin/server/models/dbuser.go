@@ -4,7 +4,7 @@ import "github.com/jinzhu/gorm"
 
 type DBUser struct {
 	Model
-
+	Name     string `json:"name" gorm:"column:name;unique;comment:'数据库用户名称'"`
 	Username string `json:"username" gorm:"column:username;unique;comment:'数据库用户'"`
 	Password string `json:"password" gorm:"column:password;comment:'数据库密码'"`
 
@@ -15,6 +15,7 @@ type DBUser struct {
 
 func AddDBUser(data map[string]interface{}) error {
 	dbUser := DBUser{
+		Name:     data["name"].(string),
 		Username: data["username"].(string),
 		Password: data["password"].(string),
 		Remark:   data["remark"].(string),
@@ -47,14 +48,14 @@ func GetDBUsers(query map[string]interface{}, page int, pageSize int) ([]*DBUser
 
 	pageNum := (page - 1) * pageSize
 
-	var username string
-	if query["username"] != nil {
-		username = query["username"].(string)
+	var name string
+	if query["name"] != nil {
+		name = query["name"].(string)
 	}
 
-	if len(username) > 0 {
-		username = "%" + username + "%"
-		err = db.Where("username like ?", username).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+	if len(name) > 0 {
+		name = "%" + name + "%"
+		err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
 	} else {
 		err = db.Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
 	}

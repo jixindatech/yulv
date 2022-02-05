@@ -15,22 +15,27 @@ var MsgFlags = map[int]string{
 	EmailUpdateFailed: "更新邮箱失败",
 
 	LdapAddFailed:    "添加LDAP失败",
-	LdapGetFailed:    "添加LDAP失败",
-	LdapUpdateFailed: "添加LDAP失败",
+	LdapGetFailed:    "获得LDAP失败",
+	LdapUpdateFailed: "更新LDAP失败",
 
 	TxsmsAddFailed:    "添加Txsms失败",
-	TxsmsGetFailed:    "添加Txsms失败",
-	TxsmsUpdateFailed: "添加Txsms失败",
+	TxsmsGetFailed:    "获得Txsms失败",
+	TxsmsUpdateFailed: "更新Txsms失败",
 
 	MsgAddFailed:    "添加msg失败",
-	MsgGetFailed:    "添加msg失败",
-	MsgUpdateFailed: "添加msg失败",
-	MsgDeleteFailed: "添加msg失败",
+	MsgGetFailed:    "获得msg失败",
+	MsgUpdateFailed: "更新msg失败",
+	MsgDeleteFailed: "删除msg失败",
 
 	DBAddFailed:    "添加db失败",
-	DBGetFailed:    "添加db失败",
-	DBUpdateFailed: "添加db失败",
-	DBDeleteFailed: "添加db失败",
+	DBGetFailed:    "获得db失败",
+	DBUpdateFailed: "更新db失败",
+	DBDeleteFailed: "删除db失败",
+
+	DBUserAddFailed:    "添加dbuser失败",
+	DBUserGetFailed:    "获得dbuser失败",
+	DBUserUpdateFailed: "更新dbuser失败",
+	DBUserDeleteFailed: "删除dbuser失败",
 }
 
 func GetMsg(code int) string {

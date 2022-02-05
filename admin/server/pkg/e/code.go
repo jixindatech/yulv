@@ -27,4 +27,9 @@ const (
 	DBGetFailed    = 60001
 	DBUpdateFailed = 60002
 	DBDeleteFailed = 60003
+
+	DBUserAddFailed    = 70000
+	DBUserGetFailed    = 70001
+	DBUserUpdateFailed = 70002
+	DBUserDeleteFailed = 70003
 )
