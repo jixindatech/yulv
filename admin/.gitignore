@@ -12,6 +12,6 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-admin/vendor/
+vendor/
 .idea/*
 logs/*.log
