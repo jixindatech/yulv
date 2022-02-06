@@ -58,12 +58,18 @@ export const constantRoutes = [
     path: '/db',
     component: Layout,
     meta: { title: '数据库管理', icon: 'el-icon-s-help' },
-    redirect: 'db',
+    redirect: 'database',
     children: [{
-      path: 'db',
-      name: 'DB',
-      component: () => import('@/views/db/index'),
-      meta: { title: '数据库配置', icon: 'dashboard' }
+      path: 'database',
+      name: 'Database',
+      component: () => import('@/views/db/database/index'),
+      meta: { title: '后端数据库配置', icon: 'dashboard' }
+    },
+    {
+      path: 'dbuser',
+      name: 'DBUser',
+      component: () => import('@/views/db/user/index'),
+      meta: { title: '代理用户配置', icon: 'dashboard' }
     }]
   },
   {

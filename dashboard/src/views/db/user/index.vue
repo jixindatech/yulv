@@ -10,7 +10,7 @@
         <el-button
           icon="el-icon-search"
           type="primary"
-          @click="queryData"
+          @click="queryData(1)"
         >查询</el-button>
         <el-button
           icon="el-icon-refresh"
@@ -34,12 +34,10 @@
       fit
       highlight-current-row
       row-key="id"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column prop="name" label="数据库名称" />
-      <el-table-column prop="user" label="数据库用户" />
-      <el-table-column prop="host" label="数据库主机" />
-      <el-table-column prop="port" label="数据库端口" />
+      <el-table-column align="center" type="index" label="序号" width="60" />
+      <el-table-column prop="name" label="用户名称" />
+      <el-table-column prop="username" label="数据库用户名称" />
       <el-table-column prop="updateAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -59,6 +57,11 @@
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="LinkDatabas(scope.row.id, scope.row.db)"
+          >关联数据库</el-button>
           <el-button
             type="danger"
             size="mini"
@@ -84,14 +87,24 @@
       :remote-close="remoteClose"
     />
 
+    <el-dialog
+      :visible="user.visible"
+      @close="closeDatabase"
+    >
+      <Database
+        :user-dbs="user.dbs"
+        @saveUserDb="saveUserDb"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/db'
+import { getList, deleteById, getById, updateUserDB } from '@/api/dbuser'
 import Edit from './edit'
+import Database from '../database/index'
 export default {
-  components: { Edit },
+  components: { Edit, Database },
   data() {
     return {
       query: {},
@@ -107,7 +120,11 @@ export default {
       },
       list: [],
       listLoading: true,
-      checkedUserList: []
+      user: {
+        id: 0,
+        dbs: [],
+        visible: false
+      }
     }
   },
   created() {
@@ -127,8 +144,8 @@ export default {
         this.listLoading = false
       })
     },
-    queryData() {
-      this.page.current = 1
+    queryData(page) {
+      this.page.current = page
       this.fetchData()
     },
     reload() {
@@ -136,7 +153,7 @@ export default {
       this.fetchData()
     },
     openAdd() {
-      this.edit.title = '新增数据库'
+      this.edit.title = '新增数据库用户'
       this.edit.visible = true
     },
     remoteClose() {
@@ -177,6 +194,32 @@ export default {
         })
         .catch(() => {
         })
+    },
+    LinkDatabas(id, dbs) {
+      this.user.visible = true
+      this.user.id = id
+      this.user.dbs = []
+
+      dbs.forEach((item) => {
+        this.user.dbs.push(item.id)
+      })
+    },
+    closeDatabase() {
+      this.user.visible = false
+      this.user.id = 0
+    },
+    saveUserDb(dbs) {
+      const data = { db: dbs }
+      updateUserDB(this.user.id, data).then((response) => {
+        if (response.code === 0) {
+          this.$message({ message: '管理数据库成功', type: 'success' })
+          this.closeDatabase()
+        } else {
+          this.$message({ message: '关联数据库失败', type: 'error' })
+        }
+      })
+
+      this.queryData(this.page.current)
     }
   }
 }

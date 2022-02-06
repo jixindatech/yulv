@@ -47,7 +47,6 @@
 
 <script>
 import { add, update } from '@/api/db'
-import { ROLE_OPTIONS, LOGIN_OPTIONS, USER_STATUS_OPTIONS } from '@/utils/const'
 
 export default {
   props: {
@@ -71,9 +70,6 @@ export default {
 
   data() {
     return {
-      ROLE_OPTIONS,
-      LOGIN_OPTIONS,
-      USER_STATUS_OPTIONS,
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         user: [{ required: true, message: '请输入用户', trigger: 'blur' }],
