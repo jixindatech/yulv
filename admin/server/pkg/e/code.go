@@ -32,4 +32,9 @@ const (
 	DBUserGetFailed    = 70001
 	DBUserUpdateFailed = 70002
 	DBUserDeleteFailed = 70003
+
+	IPAddFailed    = 80000
+	IPGetFailed    = 80001
+	IPUpdateFailed = 80002
+	IPDeleteFailed = 80003
 )

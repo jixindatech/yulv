@@ -36,6 +36,11 @@ var MsgFlags = map[int]string{
 	DBUserGetFailed:    "获得dbuser失败",
 	DBUserUpdateFailed: "更新dbuser失败",
 	DBUserDeleteFailed: "删除dbuser失败",
+
+	IPAddFailed:    "添加ip失败",
+	IPGetFailed:    "获得ip失败",
+	IPUpdateFailed: "更新ip失败",
+	IPDeleteFailed: "删除ip失败",
 }
 
 func GetMsg(code int) string {
