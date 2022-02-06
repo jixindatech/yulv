@@ -10,7 +10,7 @@ type DBUser struct {
 
 	Remark string `json:"remark" gorm:"column:remark;comment:'备注'"`
 
-	Db []DB `json:"db" gorm:"many2many:user_db;"`
+	Dbs []DB `json:"db" gorm:"many2many:user_db;"`
 }
 
 func AddDBUser(data map[string]interface{}) error {
@@ -55,9 +55,9 @@ func GetDBUsers(query map[string]interface{}, page int, pageSize int) ([]*DBUser
 
 	if len(name) > 0 {
 		name = "%" + name + "%"
-		err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+		err = db.Preload("Dbs").Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
 	} else {
-		err = db.Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+		err = db.Preload("Dbs").Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
 	}
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err
@@ -66,10 +66,10 @@ func GetDBUsers(query map[string]interface{}, page int, pageSize int) ([]*DBUser
 	return users, count, nil
 }
 
-func UpdateDBUserByDB(data map[string]interface{}) error {
+func UpdateDBUserDB(data map[string]interface{}) error {
 	dbUser := DBUser{}
-	dbUser.Model.ID = data["user_id"].(uint)
-	dbIds := data["db_ids"].([]uint)
+	dbUser.Model.ID = data["user"].(uint)
+	dbIds := data["dbs"].([]uint)
 	var dbs []*DB
 	for _, id := range dbIds {
 		temp := DB{}
@@ -77,9 +77,10 @@ func UpdateDBUserByDB(data map[string]interface{}) error {
 		dbs = append(dbs, &temp)
 	}
 
-	err := db.Model(&dbUser).Association("db").Replace(dbs).Error
+	err := db.Model(&dbUser).Association("Dbs").Replace(dbs).Error
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

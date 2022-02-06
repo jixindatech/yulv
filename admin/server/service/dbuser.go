@@ -56,3 +56,10 @@ func (d *DBUser) Save() error {
 func (d *DBUser) Delete() error {
 	return models.DeleteDBUser(d.ID)
 }
+
+func (d *DBUser) UpdateUserDB() error {
+	data := make(map[string]interface{})
+	data["user"] = d.ID
+	data["dbs"] = d.Dbs
+	return models.UpdateDBUserDB(data)
+}

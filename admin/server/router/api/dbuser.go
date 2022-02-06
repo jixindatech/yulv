@@ -203,3 +203,49 @@ func GetDBUsers(c *gin.Context) {
 	data["total"] = count
 	appG.Response(httpCode, errCode, "", data)
 }
+
+type userDBForm struct {
+	DB []uint `form:"db" validate:"required"`
+}
+
+func UpdateDBUserDB(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		formId   app.IDForm
+		form     userDBForm
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+
+	err := app.BindUriAndValid(c, &formId)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	dbUserSrv := service.DBUser{
+		ID:  formId.ID,
+		Dbs: form.DB,
+	}
+
+	err = dbUserSrv.UpdateUserDB()
+	if err != nil {
+		log.Logger.Error("DBUser", zap.String("put", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.DBUserUpdateFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	appG.Response(httpCode, errCode, "", nil)
+}
