@@ -90,6 +90,13 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		apis.GET("/ip/:id", api.GetIP)
 		apis.PUT("/ip/:id", api.UpdateIP)
 		apis.DELETE("/ip/:id", api.DeleteIP)
+
+		apis.POST("/rule", api.AddRule)
+		apis.GET("/rule", api.GetRules)
+		apis.GET("/rule/:id", api.GetRule)
+		apis.PUT("/rule/:id", api.UpdateRule)
+		apis.DELETE("/rule/:id", api.DeleteRule)
+
 	}
 
 	return r, nil

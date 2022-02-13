@@ -37,4 +37,9 @@ const (
 	IPGetFailed    = 80001
 	IPUpdateFailed = 80002
 	IPDeleteFailed = 80003
+
+	RuleAddFailed    = 90000
+	RuleGetFailed    = 90001
+	RuleUpdateFailed = 90002
+	RuleDeleteFailed = 90003
 )

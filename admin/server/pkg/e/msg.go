@@ -41,6 +41,11 @@ var MsgFlags = map[int]string{
 	IPGetFailed:    "获得ip失败",
 	IPUpdateFailed: "更新ip失败",
 	IPDeleteFailed: "删除ip失败",
+
+	RuleAddFailed:    "添加rule失败",
+	RuleGetFailed:    "获得rule失败",
+	RuleUpdateFailed: "更新rule失败",
+	RuleDeleteFailed: "删除rule失败",
 }
 
 func GetMsg(code int) string {

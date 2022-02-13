@@ -51,6 +51,7 @@ func Setup(cfg *config.DataBase) error {
 		DBUser{},
 		DB{},
 		IP{},
+		Rule{},
 	)
 
 	return nil

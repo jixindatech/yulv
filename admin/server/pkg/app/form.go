@@ -60,6 +60,16 @@ func ValidateIPs(fl validator.FieldLevel) bool {
 	return true
 }
 
+func ValidateIP(fl validator.FieldLevel) bool {
+	ip := fl.Field().String()
+	address := net.ParseIP(ip)
+	if address == nil {
+		return false
+	}
+
+	return true
+}
+
 func SetupValidate() error {
 	var err error
 
@@ -75,6 +85,11 @@ func SetupValidate() error {
 	}
 
 	err = validate.RegisterValidation("ips", ValidateIPs)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("ip", ValidateIP)
 	if err != nil {
 		return err
 	}
