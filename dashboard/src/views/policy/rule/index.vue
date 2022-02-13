@@ -6,6 +6,11 @@
       <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
+      <el-form-item label="规则类型" prop="type">
+        <el-select v-model="query.type" placeholder="请选择规则类型">
+          <el-option v-for="(item,index) in RULE_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button
           icon="el-icon-search"
@@ -36,11 +41,16 @@
       highlight-current-row
       row-key="id"
     >
-      <el-table-column prop="name" label="数据库名称" />
+      <el-table-column prop="name" label="规则名称" />
+      <el-table-column prop="sql" label="请求格式" />
+      <el-table-column prop="type" label="规则类型">
+        <template slot-scope="scope">
+          {{ RULE_TYPE_MAP[scope.row.type] }}
+        </template>
+      </el-table-column>
       <el-table-column prop="ip" label="客户端IP" />
       <el-table-column prop="user" label="数据库用户" />
       <el-table-column prop="database" label="数据库" />
-      <el-table-column prop="sql" label="请求格式" />
       <el-table-column prop="updateAt" label="创建时间" width="220">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -91,10 +101,13 @@
 <script>
 import { getList, deleteById, getById } from '@/api/rule'
 import Edit from './edit'
+import { RULE_TYPE_OPTIONS, RULE_TYPE_MAP } from '@/utils/const'
 export default {
   components: { Edit },
   data() {
     return {
+      RULE_TYPE_OPTIONS,
+      RULE_TYPE_MAP,
       query: {},
       edit: {
         title: '',

@@ -17,6 +17,11 @@
       <el-form-item label="规则名称" prop="name">
         <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
       </el-form-item>
+      <el-form-item label="规则类型" prop="type">
+        <el-select v-model="formData.type" placeholder="请选择规则类型">
+          <el-option v-for="(item,index) in RULE_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="客户IP" prop="ip">
         <el-input v-model="formData.ip" maxlength="254" />
       </el-form-item>
@@ -46,7 +51,7 @@
 
 <script>
 import { add, update } from '@/api/rule'
-
+import { RULE_TYPE_OPTIONS } from '@/utils/const'
 export default {
   props: {
     title: {
@@ -69,8 +74,10 @@ export default {
 
   data() {
     return {
+      RULE_TYPE_OPTIONS,
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择规则类型', trigger: 'change' }],
         sql: [{ required: true, message: '请输入匹配内容', trigger: 'change' }]
       }
     }
