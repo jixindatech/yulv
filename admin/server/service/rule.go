@@ -6,6 +6,7 @@ type Rule struct {
 	ID uint
 
 	Name     string
+	Type     int
 	IP       string
 	User     string
 	Database string
@@ -28,7 +29,7 @@ func (d *Rule) Get() (*models.Rule, error) {
 func (d *Rule) GetList() ([]*models.Rule, uint, error) {
 	query := make(map[string]interface{})
 	query["name"] = d.Name
-
+	query["type"] = d.Type
 	pageSize := d.PageSize
 	page := d.Page
 
@@ -38,6 +39,7 @@ func (d *Rule) GetList() ([]*models.Rule, uint, error) {
 func (d *Rule) Save() error {
 	data := map[string]interface{}{
 		"name":     d.Name,
+		"type":     d.Type,
 		"user":     d.User,
 		"ip":       d.IP,
 		"database": d.Database,

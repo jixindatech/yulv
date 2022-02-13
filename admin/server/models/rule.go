@@ -8,6 +8,7 @@ type Rule struct {
 	Model
 
 	Name     string `json:"name" gorm:"column:name;unique;comment:'规则名称'"`
+	Type     int    `json:"type" gorm:"column:type;comment:'规则类型'"`
 	IP       string `json:"ip" gorm:"column:ip;comment:'客户端IP'"`
 	User     string `json:"user" gorm:"column:user;comment:'数据库用户'"`
 	Database string `json:"database" gorm:"column:database;comment:'数据库名称'"`
@@ -19,6 +20,7 @@ type Rule struct {
 func AddRule(data map[string]interface{}) error {
 	rule := Rule{
 		Name:     data["name"].(string),
+		Type:     data["type"].(int),
 		IP:       data["ip"].(string),
 		User:     data["user"].(string),
 		Database: data["database"].(string),
@@ -60,11 +62,18 @@ func GetRules(query map[string]interface{}, page int, pageSize int) ([]*Rule, ui
 		name = query["name"].(string)
 	}
 
+	search := make(map[string]interface{})
+
+	typ := query["type"].(int)
+	if typ > 0 {
+		search["type"] = typ
+	}
+
 	if len(name) > 0 {
 		name = "%" + name + "%"
-		err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&rules).Count(&count).Error
+		err = db.Where("name like ?", name).Where(search).Offset(pageNum).Limit(pageSize).Find(&rules).Count(&count).Error
 	} else {
-		err = db.Offset(pageNum).Limit(pageSize).Find(&rules).Count(&count).Error
+		err = db.Where(search).Offset(pageNum).Limit(pageSize).Find(&rules).Count(&count).Error
 	}
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err

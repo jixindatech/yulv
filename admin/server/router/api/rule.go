@@ -12,6 +12,7 @@ import (
 
 type ruleForm struct {
 	Name     string `json:"name" validate:"required,max=254"`
+	Type     int    `json:"type" validate:"required,min=1,max=254"`
 	User     string `json:"user" validate:"omitempty,max=254"`
 	IP       string `json:"ip" validate:"omitempty,ip,max=254"`
 	Database string `json:"database" validate:"omitempty,max=254"`
@@ -38,6 +39,7 @@ func AddRule(c *gin.Context) {
 
 	ruleSrv := service.Rule{
 		Name:     form.Name,
+		Type:     form.Type,
 		User:     form.User,
 		IP:       form.IP,
 		Database: form.Database,
@@ -85,6 +87,7 @@ func UpdateRule(c *gin.Context) {
 	ruleSrv := service.Rule{
 		ID:       formId.ID,
 		Name:     form.Name,
+		Type:     form.Type,
 		User:     form.User,
 		IP:       form.IP,
 		Database: form.Database,
@@ -170,6 +173,7 @@ func GetRule(c *gin.Context) {
 
 type queryRuleForm struct {
 	Name     string `form:"name" validate:"max=254"`
+	Type     int    `form:"type" validate:"omitempty,min=1,max=2"`
 	Page     int    `form:"page" validate:"required,min=1,max=50"`
 	PageSize int    `form:"size" validate:"required,min=1"`
 }
@@ -192,6 +196,7 @@ func GetRules(c *gin.Context) {
 
 	ruleSrv := service.Rule{
 		Name:     form.Name,
+		Type:     form.Type,
 		Page:     form.Page,
 		PageSize: form.PageSize,
 	}
