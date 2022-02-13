@@ -116,7 +116,7 @@ export const constantRoutes = [
       meta: { title: '系统配置', icon: 'dashboard' }
     }]
   },
-
+  /*
   {
     path: '/example',
     component: Layout,
@@ -210,14 +210,14 @@ export const constantRoutes = [
       }
     ]
   },
-
+  */
   {
-    path: 'external-link',
+    path: 'git',
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'https://github.com/jixindatech/yulv',
+        meta: { title: 'git地址', icon: 'link' }
       }
     ]
   },
