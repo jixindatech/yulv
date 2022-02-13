@@ -76,11 +76,18 @@ export const constantRoutes = [
     path: '/policy',
     component: Layout,
     redirect: 'ip',
+    meta: { title: '策略管理', icon: 'el-icon-s-help' },
     children: [{
       path: 'ip',
       name: 'IP',
       component: () => import('@/views/policy/ip/index'),
       meta: { title: 'IP管理', icon: 'dashboard' }
+    },
+    {
+      path: 'rule',
+      name: 'Rule',
+      component: () => import('@/views/policy/rule/index'),
+      meta: { title: '规则管理', icon: 'dashboard' }
     }]
   },
   {
