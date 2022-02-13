@@ -89,11 +89,6 @@ func SetupValidate() error {
 		return err
 	}
 
-	err = validate.RegisterValidation("ip", ValidateIP)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
