@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"net"
 	"regexp"
+	"strings"
 )
 
 type IDForm struct {
@@ -38,6 +40,26 @@ func ValidateRole(fl validator.FieldLevel) bool {
 	return false
 }
 
+func ValidateIPs(fl validator.FieldLevel) bool {
+	ips := fl.Field().Interface().([]string)
+	for _, ip := range ips {
+		cidr := strings.Contains(ip, "/")
+		if cidr {
+			_, _, err := net.ParseCIDR(ip)
+			if err != nil {
+				return false
+			}
+		} else {
+			address := net.ParseIP(ip)
+			if address == nil {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
 func SetupValidate() error {
 	var err error
 
@@ -48,6 +70,11 @@ func SetupValidate() error {
 	}
 
 	err = validate.RegisterValidation("role", ValidateRole)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("ips", ValidateIPs)
 	if err != nil {
 		return err
 	}

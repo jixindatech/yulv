@@ -5,15 +5,16 @@ import (
 	"admin/server/pkg/app"
 	"admin/server/pkg/e"
 	"admin/server/service"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net/http"
 )
 
 type ipForm struct {
-	Name string `json:"name" validate:"required,max=254"`
-	Type int    `json:"type" validate:"required,min=1,max=2"`
-	IP   []byte `json:"ip" validate:"required"`
+	Name string   `json:"name" validate:"required,max=254"`
+	Type int      `json:"type" validate:"required,min=1,max=2"`
+	IP   []string `json:"ip" validate:"required,ips"`
 
 	Remark string `json:"remark" validate:"max=254"`
 }
@@ -34,10 +35,18 @@ func AddIP(c *gin.Context) {
 		return
 	}
 
+	ips, err := json.Marshal(form.IP)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
 	ipSrv := service.IP{
 		Name:   form.Name,
 		Type:   form.Type,
-		IP:     form.IP,
+		IP:     ips,
 		Remark: form.Remark,
 	}
 
@@ -78,11 +87,19 @@ func UpdateIP(c *gin.Context) {
 		return
 	}
 
+	ips, err := json.Marshal(form.IP)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
 	ipSrv := service.IP{
 		ID:     formId.ID,
 		Name:   form.Name,
 		Type:   form.Type,
-		IP:     form.IP,
+		IP:     ips,
 		Remark: form.Remark,
 	}
 

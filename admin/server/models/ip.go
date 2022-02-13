@@ -19,7 +19,7 @@ func AddIP(data map[string]interface{}) error {
 	ip := IP{
 		Name:   data["name"].(string),
 		Type:   data["type"].(int),
-		IP:     data["ip"].(datatypes.JSON),
+		IP:     data["ip"].([]byte),
 		Remark: data["remark"].(string),
 	}
 	return db.Create(&ip).Error
@@ -49,9 +49,6 @@ func GetIPs(query map[string]interface{}, page int, pageSize int) ([]*IP, uint, 
 	var err error
 	search := make(map[string]interface{})
 	name := query["name"].(string)
-	if len(name) > 0 {
-		search["name"] = name
-	}
 
 	ipType := query["type"].(int)
 	if ipType > 0 {
@@ -59,8 +56,12 @@ func GetIPs(query map[string]interface{}, page int, pageSize int) ([]*IP, uint, 
 	}
 
 	pageNum := (page - 1) * pageSize
-	err = db.Where(search).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
-
+	if len(name) > 0 {
+		name = "%" + name + "%"
+		err = db.Where(search).Where("name LIKE ?", name).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+	} else {
+		err = db.Where(search).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+	}
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err
 	}
