@@ -17,6 +17,11 @@
       <el-form-item label="IP名称" prop="name">
         <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
       </el-form-item>
+      <el-form-item label="规则类型" prop="type">
+        <el-select v-model="formData.type" placeholder="请选择规则类型">
+          <el-option v-for="(item,index) in IP_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <span slot="label">IP
           <el-tooltip placement="right">
@@ -37,7 +42,7 @@
         >
           <el-table-column align="center" label="IP" width="270px">
             <template slot-scope="scope">
-              <el-form-item :prop="'ips.' + scope.$index + '.ip'" :rules="rules.ips">
+              <el-form-item :prop="'ips.' + scope.$index + '.ip'" :rules="rules.ip">
                 <el-input v-model="scope.row.ip" size="mini" placeholder="请输入IP" />
               </el-form-item>
             </template>
@@ -68,6 +73,7 @@
 <script>
 import { add, update } from '@/api/ip'
 import { validIP } from '@/utils/validate'
+import { IP_TYPE_OPTIONS } from '@/utils/const'
 
 const checkIP = (rule, value, callback) => {
   const items = value.split('\n')
@@ -96,18 +102,16 @@ export default {
     remoteClose: {
       type: Function,
       default: function() {}
-    },
-    type: {
-      type: Number,
-      default: 1
     }
   },
 
   data() {
     return {
+      IP_TYPE_OPTIONS,
       ips: [],
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
         ip: [
           { required: true, message: '请输入正确IP', trigger: 'blur' },
           { validator: checkIP }
@@ -122,13 +126,11 @@ export default {
         if (this.formData.ip === undefined) {
           this.formData.ip = []
           const item = { ip: '' }
-          console.log('ttttttt')
           this.ips.push(item)
         } else {
           this.formData.ip.forEach(element => {
             const item = { ip: element }
             this.ips.push(item)
-            console.log('ttttttt1111')
           })
         }
         this.formData.ips = this.ips
@@ -154,7 +156,6 @@ export default {
         this.formData.ip.push(element.ip)
       })
 
-      this.formData.type = this.type
       if (this.formData.id) {
         response = await update(this.formData.id, this.formData)
       } else {

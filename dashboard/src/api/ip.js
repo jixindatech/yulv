@@ -37,3 +37,11 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+
+export function Distribute() {
+  return request({
+    url: `/api/ip/distribute`,
+    method: 'post'
+  })
+}
+

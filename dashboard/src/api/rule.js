@@ -37,3 +37,17 @@ export function deleteById(id) {
     method: 'delete'
   })
 }
+
+export function test() {
+  return request({
+    url: `/api/rule/sql/test`,
+    method: 'get'
+  })
+}
+
+export function Distribute() {
+  return request({
+    url: `/api/rule/distribute`,
+    method: 'post'
+  })
+}

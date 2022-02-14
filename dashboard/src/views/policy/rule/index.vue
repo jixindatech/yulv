@@ -6,8 +6,8 @@
       <el-form-item label="规则名称:">
         <el-input v-model.trim="query.name" />
       </el-form-item>
-      <el-form-item label="规则类型" prop="type">
-        <el-select v-model="query.type" placeholder="请选择规则类型">
+      <el-form-item label="规则类型" prop="action">
+        <el-select v-model="query.action" placeholder="请选择规则类型">
           <el-option v-for="(item,index) in RULE_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -26,6 +26,16 @@
           type="primary"
           @click="openAdd"
         >新增</el-button>
+        <el-button
+          icon="el-icon-circle-plus-outline"
+          type="success"
+          @click="distribute"
+        >下发配置</el-button>
+        <el-button
+          icon="el-icon-circle-plus-outline"
+          type="info"
+          @click="testSql"
+        >测试水印</el-button>
       </el-form-item>
     </el-form>
 
@@ -42,10 +52,10 @@
       row-key="id"
     >
       <el-table-column prop="name" label="规则名称" />
-      <el-table-column prop="sql" label="请求格式" />
-      <el-table-column prop="type" label="规则类型">
+      <el-table-column prop="sql" label="请求水印" />
+      <el-table-column prop="action" label="匹配动作">
         <template slot-scope="scope">
-          {{ RULE_TYPE_MAP[scope.row.type] }}
+          {{ RULE_TYPE_MAP[scope.row.action] }}
         </template>
       </el-table-column>
       <el-table-column prop="ip" label="客户端IP" />
@@ -95,15 +105,22 @@
       :remote-close="remoteClose"
     />
 
+    <TestRule
+      :title="test.title"
+      :visible="test.visible"
+      :remote-close="testClose"
+    />
+
   </div>
 </template>
 
 <script>
-import { getList, deleteById, getById } from '@/api/rule'
+import { getList, deleteById, getById, Distribute } from '@/api/rule'
 import Edit from './edit'
+import TestRule from './test'
 import { RULE_TYPE_OPTIONS, RULE_TYPE_MAP } from '@/utils/const'
 export default {
-  components: { Edit },
+  components: { Edit, TestRule },
   data() {
     return {
       RULE_TYPE_OPTIONS,
@@ -113,6 +130,10 @@ export default {
         title: '',
         visible: false,
         formData: {}
+      },
+      test: {
+        title: '',
+        visible: false
       },
       page: {
         current: 1,
@@ -190,6 +211,22 @@ export default {
         })
         .catch(() => {
         })
+    },
+    testSql() {
+      this.test.title = '测试规则'
+      this.test.visible = true
+    },
+    testClose() {
+      this.test.visible = false
+    },
+    distribute() {
+      Distribute().then((response) => {
+        if (response.code === 0) {
+          this.$message({ message: '下发成功', type: 'success' })
+        } else {
+          this.$message({ message: '下发失败', type: 'error' })
+        }
+      })
     }
   }
 }

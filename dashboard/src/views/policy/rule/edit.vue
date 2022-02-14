@@ -17,11 +17,6 @@
       <el-form-item label="规则名称" prop="name">
         <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
       </el-form-item>
-      <el-form-item label="规则类型" prop="type">
-        <el-select v-model="formData.type" placeholder="请选择规则类型">
-          <el-option v-for="(item,index) in RULE_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="客户IP" prop="ip">
         <el-input v-model="formData.ip" maxlength="254" />
       </el-form-item>
@@ -31,8 +26,29 @@
       <el-form-item label="数据库" prop="database">
         <el-input v-model="formData.database" maxlength="254" />
       </el-form-item>
-      <el-form-item label="请求格式" prop="sql">
+      <el-form-item label="请求方式" prop="type">
+        <el-select v-model="formData.type" placeholder="请选择请求方式">
+          <el-option v-for="(item,index) in SQL_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="规则水印" prop="sql">
         <el-input v-model="formData.sql" maxlength="254" />
+      </el-form-item>
+      <el-form-item label="匹配方式" prop="match">
+        <el-select v-model="formData.match" placeholder="请选择匹配方式">
+          <el-option v-for="(item,index) in RULE_MATCH_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="formData.match !== undefined" label="匹配内容" prop="pattern">
+        <el-input v-model="formData.pattern" maxlength="254" />
+      </el-form-item>
+      <el-form-item label="影响行数" prop="rows">
+        <el-input v-model.number="formData.rows" />
+      </el-form-item>
+      <el-form-item label="匹配动作" prop="action">
+        <el-select v-model="formData.action" placeholder="请选择规则类型">
+          <el-option v-for="(item,index) in RULE_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
@@ -51,7 +67,7 @@
 
 <script>
 import { add, update } from '@/api/rule'
-import { RULE_TYPE_OPTIONS } from '@/utils/const'
+import { RULE_TYPE_OPTIONS, RULE_MATCH_OPTIONS, SQL_TYPE_OPTIONS } from '@/utils/const'
 export default {
   props: {
     title: {
@@ -75,10 +91,11 @@ export default {
   data() {
     return {
       RULE_TYPE_OPTIONS,
+      RULE_MATCH_OPTIONS,
+      SQL_TYPE_OPTIONS,
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请选择规则类型', trigger: 'change' }],
-        sql: [{ required: true, message: '请输入匹配内容', trigger: 'change' }]
+        action: [{ required: true, message: '请选择动作类型', trigger: 'change' }]
       }
     }
   },

@@ -21,6 +21,11 @@
           type="primary"
           @click="openAdd"
         >新增</el-button>
+        <el-button
+          icon="el-icon-circle-plus-outline"
+          type="success"
+          @click="distribute"
+        >下发配置</el-button>
       </el-form-item>
     </el-form>
 
@@ -100,7 +105,7 @@
 </template>
 
 <script>
-import { getList, deleteById, getById, updateUserDB } from '@/api/dbuser'
+import { getList, deleteById, getById, updateUserDB, Distribute } from '@/api/dbuser'
 import Edit from './edit'
 import Database from '../database/index'
 export default {
@@ -220,6 +225,15 @@ export default {
       })
 
       this.queryData(this.page.current)
+    },
+    distribute() {
+      Distribute().then((response) => {
+        if (response.code === 0) {
+          this.$message({ message: '下发成功', type: 'success' })
+        } else {
+          this.$message({ message: '下发失败', type: 'error' })
+        }
+      })
     }
   }
 }

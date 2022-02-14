@@ -45,3 +45,10 @@ export function updateUserDB(id, data) {
     data
   })
 }
+
+export function Distribute() {
+  return request({
+    url: `/api/dbuser/distribute`,
+    method: 'post'
+  })
+}
