@@ -222,3 +222,22 @@ func GetIPs(c *gin.Context) {
 	data["total"] = count
 	appG.Response(httpCode, errCode, "", data)
 }
+
+func DistributeIP(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+	srv := service.IP{}
+	err := srv.Distribute()
+	if err != nil {
+		log.Logger.Error("ip", zap.String("post", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.IPDistributeFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	appG.Response(httpCode, errCode, "", nil)
+}

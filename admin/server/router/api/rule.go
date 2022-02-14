@@ -12,11 +12,15 @@ import (
 
 type ruleForm struct {
 	Name     string `json:"name" validate:"required,max=254"`
-	Type     int    `json:"type" validate:"required,min=1,max=254"`
+	Action   int    `json:"action" validate:"required,min=1,max=3"`
 	User     string `json:"user" validate:"omitempty,max=254"`
 	IP       string `json:"ip" validate:"omitempty,ip,max=254"`
 	Database string `json:"database" validate:"omitempty,max=254"`
-	Sql      string `json:"sql" validate:"required,max=254"`
+	Type     string `json:"type" validate:"omitempty,max=254"`
+	Sql      string `json:"sql" validate:"omitempty,max=254"`
+	Match    string `json:"match" validate:"omitempty,max=254"`
+	Pattern  string `json:"pattern" validate:"omitempty,max=254"`
+	Rows     int    `json:"rows" validate:"omitempty,min=1"`
 
 	Remark string `json:"remark" validate:"omitempty,max=254"`
 }
@@ -37,14 +41,28 @@ func AddRule(c *gin.Context) {
 		return
 	}
 
+	if len(form.Match) > 0 {
+		if len(form.Pattern) == 0 {
+			httpCode = e.InvalidParams
+			errCode = e.ERROR
+			appG.Response(httpCode, errCode, "pattern needs content", nil)
+			return
+		}
+	}
+
 	ruleSrv := service.Rule{
 		Name:     form.Name,
-		Type:     form.Type,
+		Action:   form.Action,
 		User:     form.User,
 		IP:       form.IP,
 		Database: form.Database,
+		Type:     form.Type,
 		Sql:      form.Sql,
-		Remark:   form.Remark,
+		Match:    form.Match,
+		Pattern:  form.Pattern,
+		Rows:     form.Rows,
+
+		Remark: form.Remark,
 	}
 
 	err = ruleSrv.Save()
@@ -84,15 +102,29 @@ func UpdateRule(c *gin.Context) {
 		return
 	}
 
+	if len(form.Match) > 0 {
+		if len(form.Pattern) == 0 {
+			httpCode = e.InvalidParams
+			errCode = e.ERROR
+			appG.Response(httpCode, errCode, "pattern needs content", nil)
+			return
+		}
+	}
+
 	ruleSrv := service.Rule{
 		ID:       formId.ID,
 		Name:     form.Name,
-		Type:     form.Type,
+		Action:   form.Action,
 		User:     form.User,
 		IP:       form.IP,
 		Database: form.Database,
+		Type:     form.Type,
 		Sql:      form.Sql,
-		Remark:   form.Remark,
+		Match:    form.Match,
+		Pattern:  form.Pattern,
+		Rows:     form.Rows,
+
+		Remark: form.Remark,
 	}
 
 	err = ruleSrv.Save()
@@ -173,7 +205,7 @@ func GetRule(c *gin.Context) {
 
 type queryRuleForm struct {
 	Name     string `form:"name" validate:"max=254"`
-	Type     int    `form:"type" validate:"omitempty,min=1,max=2"`
+	Action   int    `form:"action" validate:"omitempty,min=1,max=3"`
 	Page     int    `form:"page" validate:"required,min=1,max=50"`
 	PageSize int    `form:"size" validate:"required,min=1"`
 }
@@ -196,7 +228,7 @@ func GetRules(c *gin.Context) {
 
 	ruleSrv := service.Rule{
 		Name:     form.Name,
-		Type:     form.Type,
+		Action:   form.Action,
 		Page:     form.Page,
 		PageSize: form.PageSize,
 	}
@@ -212,5 +244,46 @@ func GetRules(c *gin.Context) {
 	data := make(map[string]interface{})
 	data["list"] = ips
 	data["total"] = count
+	appG.Response(httpCode, errCode, "", data)
+}
+
+func DistributeRule(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+	srv := service.Rule{}
+	err := srv.Distribute()
+	if err != nil {
+		log.Logger.Error("ip", zap.String("post", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.IPDistributeFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	appG.Response(httpCode, errCode, "", nil)
+}
+
+func GetRuleTest(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+
+	srv := service.Rule{}
+	res, err := srv.Test()
+	if err != nil {
+		log.Logger.Error("Rule", zap.String("get", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.RuleGetFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["item"] = res
 	appG.Response(httpCode, errCode, "", data)
 }

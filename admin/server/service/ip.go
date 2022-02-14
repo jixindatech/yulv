@@ -1,6 +1,11 @@
 package service
 
-import "admin/server/models"
+import (
+	"admin/server/cache"
+	"admin/server/models"
+	"encoding/json"
+	"time"
+)
 
 type IP struct {
 	ID uint
@@ -53,4 +58,70 @@ func (d *IP) Save() error {
 
 func (d *IP) Delete() error {
 	return models.DeleteIP(d.ID)
+}
+
+func (d *IP) Distribute() error {
+	ips, _, err := models.GetIPs(nil, 0, 0)
+	if err != nil {
+		return err
+	}
+
+	var deny []string
+	var allow []string
+	for _, ipItem := range ips {
+		bytes, err := ipItem.IP.MarshalJSON()
+		if err != nil {
+			return err
+		}
+
+		var iparray []string
+		err = json.Unmarshal(bytes, &iparray)
+		if err != nil {
+			return err
+		}
+
+		if ipItem.Type == 1 {
+			allow = append(allow, iparray...)
+		} else if ipItem.Type == 2 {
+			deny = append(deny, iparray...)
+		}
+	}
+
+	if len(allow) == 0 {
+		allow = []string{}
+	}
+	if len(deny) == 0 {
+		deny = []string{}
+	}
+
+	var ipallow cacheHead
+	var ipdeny cacheHead
+	ipallow.ID = 1
+	ipallow.Timestamp = time.Now().Unix()
+	ipallow.Config = map[string]interface{}{
+		"type": "allow",
+		"data": allow,
+	}
+	ipdeny.ID = 1
+	ipdeny.Timestamp = time.Now().Unix()
+	ipdeny.Config = map[string]interface{}{
+		"type": "deny",
+		"data": deny,
+	}
+
+	var items []cacheHead
+	items = append(items, ipallow)
+	items = append(items, ipdeny)
+
+	str, err := json.Marshal(items)
+	if err != nil {
+		return err
+	}
+
+	err = cache.Set("redis", cacheIP, string(str), 0)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

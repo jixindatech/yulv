@@ -28,15 +28,17 @@ const (
 	DBUpdateFailed = 60002
 	DBDeleteFailed = 60003
 
-	DBUserAddFailed    = 70000
-	DBUserGetFailed    = 70001
-	DBUserUpdateFailed = 70002
-	DBUserDeleteFailed = 70003
+	DBUserAddFailed        = 70000
+	DBUserGetFailed        = 70001
+	DBUserUpdateFailed     = 70002
+	DBUserDeleteFailed     = 70003
+	DBUserDistributeFailed = 70004
 
-	IPAddFailed    = 80000
-	IPGetFailed    = 80001
-	IPUpdateFailed = 80002
-	IPDeleteFailed = 80003
+	IPAddFailed        = 80000
+	IPGetFailed        = 80001
+	IPUpdateFailed     = 80002
+	IPDeleteFailed     = 80003
+	IPDistributeFailed = 80004
 
 	RuleAddFailed    = 90000
 	RuleGetFailed    = 90001

@@ -1,6 +1,10 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+	"github.com/jinzhu/gorm"
+	"time"
+)
 
 type DBUser struct {
 	Model
@@ -8,17 +12,24 @@ type DBUser struct {
 	Username string `json:"username" gorm:"column:username;unique;comment:'数据库用户'"`
 	Password string `json:"password" gorm:"column:password;comment:'数据库密码'"`
 
-	Remark string `json:"remark" gorm:"column:remark;comment:'备注'"`
+	Remark    string `json:"remark" gorm:"column:remark;comment:'备注'"`
+	Timestamp int64  `json:"-" gorm:"column:timestamp;comment:'时间戳'"`
 
 	Dbs []DB `json:"db" gorm:"many2many:user_db;"`
 }
 
+func (r *DBUser) AfterSave(tx *gorm.DB) (err error) {
+	fmt.Println("save  ???")
+	return nil
+}
+
 func AddDBUser(data map[string]interface{}) error {
 	dbUser := DBUser{
-		Name:     data["name"].(string),
-		Username: data["username"].(string),
-		Password: data["password"].(string),
-		Remark:   data["remark"].(string),
+		Name:      data["name"].(string),
+		Username:  data["username"].(string),
+		Password:  data["password"].(string),
+		Remark:    data["remark"].(string),
+		Timestamp: time.Now().Unix(),
 	}
 	return db.Create(&dbUser).Error
 }
@@ -28,6 +39,7 @@ func DeleteDBUser(id uint) error {
 }
 
 func UpdateDBUser(id uint, data map[string]interface{}) error {
+	data["timestamp"] = time.Now().Unix()
 	return db.Model(&DBUser{}).Where("id = ?", id).Update(data).Error
 }
 
@@ -53,12 +65,17 @@ func GetDBUsers(query map[string]interface{}, page int, pageSize int) ([]*DBUser
 		name = query["name"].(string)
 	}
 
-	if len(name) > 0 {
-		name = "%" + name + "%"
-		err = db.Preload("Dbs").Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+	if page > 0 {
+		if len(name) > 0 {
+			name = "%" + name + "%"
+			err = db.Preload("Dbs").Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+		} else {
+			err = db.Preload("Dbs").Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+		}
 	} else {
-		err = db.Preload("Dbs").Offset(pageNum).Limit(pageSize).Find(&users).Count(&count).Error
+		err = db.Preload("Dbs").Find(&users).Count(&count).Error
 	}
+
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err
 	}
@@ -66,9 +83,9 @@ func GetDBUsers(query map[string]interface{}, page int, pageSize int) ([]*DBUser
 	return users, count, nil
 }
 
-func UpdateDBUserDB(data map[string]interface{}) error {
+func UpdateDBUserDB(userId uint, data map[string]interface{}) error {
 	dbUser := DBUser{}
-	dbUser.Model.ID = data["user"].(uint)
+	dbUser.Model.ID = userId
 	dbIds := data["dbs"].([]uint)
 	var dbs []*DB
 	for _, id := range dbIds {
@@ -82,5 +99,7 @@ func UpdateDBUserDB(data map[string]interface{}) error {
 		return err
 	}
 
-	return nil
+	return db.Debug().Model(&DBUser{}).Where("id = ?", userId).Update(map[string]interface{}{
+		"timestamp": time.Now().Unix(),
+	}).Error
 }

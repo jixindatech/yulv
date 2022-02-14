@@ -84,18 +84,22 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		apis.PUT("/dbuser/:id", api.UpdateDBUser)
 		apis.DELETE("/dbuser/:id", api.DeleteDBUser)
 		apis.PUT("/dbuser/:id/db", api.UpdateDBUserDB)
+		apis.POST("/dbuser/distribute", api.DistributeDBUser)
 
 		apis.POST("/ip", api.AddIP)
 		apis.GET("/ip", api.GetIPs)
 		apis.GET("/ip/:id", api.GetIP)
 		apis.PUT("/ip/:id", api.UpdateIP)
 		apis.DELETE("/ip/:id", api.DeleteIP)
+		apis.POST("/ip/distribute", api.DistributeIP)
 
 		apis.POST("/rule", api.AddRule)
 		apis.GET("/rule", api.GetRules)
 		apis.GET("/rule/:id", api.GetRule)
 		apis.PUT("/rule/:id", api.UpdateRule)
 		apis.DELETE("/rule/:id", api.DeleteRule)
+		apis.POST("/rule/distribute", api.DistributeRule)
+		apis.GET("/rule/sql/test", api.GetRuleTest)
 
 	}
 

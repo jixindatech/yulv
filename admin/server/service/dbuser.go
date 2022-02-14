@@ -1,6 +1,10 @@
 package service
 
-import "admin/server/models"
+import (
+	"admin/server/cache"
+	"admin/server/models"
+	"encoding/json"
+)
 
 type DBUser struct {
 	ID uint
@@ -59,7 +63,57 @@ func (d *DBUser) Delete() error {
 
 func (d *DBUser) UpdateUserDB() error {
 	data := make(map[string]interface{})
-	data["user"] = d.ID
 	data["dbs"] = d.Dbs
-	return models.UpdateDBUserDB(data)
+	return models.UpdateDBUserDB(d.ID, data)
+}
+
+func (d *DBUser) Distribute() error {
+	users, _, err := models.GetDBUsers(nil, 0, 0)
+	if err != nil {
+		return err
+	}
+
+	var items []cacheHead
+	for _, user := range users {
+		var item dbUser
+		item.User = user.Username
+		item.Password = user.Password
+		for _, db := range user.Dbs {
+			var dbItem database
+			dbItem.Name = db.Name
+			dbItem.User = db.User
+			dbItem.Password = db.Password
+			db.Host = db.Host
+			db.Port = db.Port
+
+			item.Database = append(item.Database, dbItem)
+		}
+		var cacheItem cacheHead
+		cacheItem.ID = user.ID
+		cacheItem.Timestamp = user.Timestamp
+		if len(item.Database) == 0 {
+			item.Database = []database{}
+		}
+		cacheItem.Config = item
+		items = append(items, cacheItem)
+	}
+
+	var data interface{}
+	if len(items) == 0 {
+		data = [][]struct{}{}
+	} else {
+		data = items
+	}
+
+	str, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	err = cache.Set("redis", cacheUser, string(str), 0)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -249,3 +249,22 @@ func UpdateDBUserDB(c *gin.Context) {
 
 	appG.Response(httpCode, errCode, "", nil)
 }
+
+func DistributeDBUser(c *gin.Context) {
+	var (
+		appG     = app.Gin{C: c}
+		httpCode = http.StatusOK
+		errCode  = e.SUCCESS
+	)
+	srv := service.DBUser{}
+	err := srv.Distribute()
+	if err != nil {
+		log.Logger.Error("DBUser", zap.String("post", err.Error()))
+		httpCode = http.StatusInternalServerError
+		errCode = e.DBUserDistributeFailed
+		appG.Response(httpCode, errCode, "", nil)
+		return
+	}
+
+	appG.Response(httpCode, errCode, "", nil)
+}

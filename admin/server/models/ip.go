@@ -47,21 +47,28 @@ func GetIPs(query map[string]interface{}, page int, pageSize int) ([]*IP, uint, 
 	var ips []*IP
 	var count uint
 	var err error
-	search := make(map[string]interface{})
-	name := query["name"].(string)
 
-	ipType := query["type"].(int)
-	if ipType > 0 {
-		search["type"] = ipType
-	}
+	if page > 0 {
+		pageNum := (page - 1) * pageSize
 
-	pageNum := (page - 1) * pageSize
-	if len(name) > 0 {
-		name = "%" + name + "%"
-		err = db.Where(search).Where("name LIKE ?", name).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+		search := make(map[string]interface{})
+		name := query["name"].(string)
+
+		ipType := query["type"].(int)
+		if ipType > 0 {
+			search["type"] = ipType
+		}
+
+		if len(name) > 0 {
+			name = "%" + name + "%"
+			err = db.Where(search).Where("name LIKE ?", name).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+		} else {
+			err = db.Where(search).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+		}
 	} else {
-		err = db.Where(search).Offset(pageNum).Limit(pageSize).Find(&ips).Count(&count).Error
+		err = db.Find(&ips).Count(&count).Error
 	}
+
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err
 	}
