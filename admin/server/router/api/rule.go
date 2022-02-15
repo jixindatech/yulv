@@ -266,15 +266,28 @@ func DistributeRule(c *gin.Context) {
 	appG.Response(httpCode, errCode, "", nil)
 }
 
+type queryRuleTestForm struct {
+	Sql string `form:"sql" validate:"required,max=254"`
+}
+
 func GetRuleTest(c *gin.Context) {
 	var (
 		appG     = app.Gin{C: c}
 		httpCode = http.StatusOK
+		form     queryRuleTestForm
 		errCode  = e.SUCCESS
 	)
 
+	err := app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
 	srv := service.Rule{}
-	res, err := srv.Test()
+	res, err := srv.Test(form.Sql)
 	if err != nil {
 		log.Logger.Error("Rule", zap.String("get", err.Error()))
 		httpCode = http.StatusInternalServerError

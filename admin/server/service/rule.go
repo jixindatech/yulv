@@ -115,6 +115,6 @@ func (d *Rule) Distribute() error {
 	return nil
 }
 
-func (d *Rule) Test() (string, error) {
-	return "test", nil
+func (d *Rule) Test(sql string) (string, error) {
+	return GetFingerprint(sql), nil
 }
