@@ -1,7 +1,9 @@
 package service
 
 import (
+	"admin/server/cache"
 	"admin/server/models"
+	"encoding/json"
 )
 
 type Rule struct {
@@ -76,7 +78,8 @@ func (d *Rule) Distribute() error {
 	if err != nil {
 		return err
 	}
-
+	var reqRules []cacheHead
+	var respRules []cacheHead
 	for _, item := range rules {
 		var head cacheHead
 		head.ID = item.ID
@@ -95,23 +98,54 @@ func (d *Rule) Distribute() error {
 		if len(item.User) > 0 {
 			match["user"] = item.User
 		}
+		if len(item.Match) > 0 {
+			match["match"] = item.Match
+			match["pattern"] = item.Pattern
+		}
+		if len(item.Sql) > 0 {
+			match["sql"] = item.Sql
+		}
+		head.Config = map[string]interface{}{
+			"matcher": match,
+			"action":  item.Action,
+		}
 
+		match["rows"] = item.Rows
+
+		if item.Rows == 0 {
+			reqRules = append(reqRules, head)
+		} else {
+			respRules = append(respRules, head)
+		}
 	}
-	/*
-		var items []cacheHead
-		items = append(items, ipallow)
-		items = append(items, ipdeny)
 
-		str, err := json.Marshal(items)
-		if err != nil {
-			return err
-		}
+	if len(reqRules) == 0 {
+		respRules = []cacheHead{}
+	}
+	if len(respRules) == 0 {
+		respRules = []cacheHead{}
+	}
 
-		err = cache.Set("redis", cacheReqRule, string(str), 0)
-		if err != nil {
-			return err
-		}
-	*/
+	str, err := json.Marshal(reqRules)
+	if err != nil {
+		return err
+	}
+
+	err = cache.Set("redis", cacheReqRule, string(str), 0)
+	if err != nil {
+		return err
+	}
+
+	str, err = json.Marshal(respRules)
+	if err != nil {
+		return err
+	}
+
+	err = cache.Set("redis", cacheRespRule, string(str), 0)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

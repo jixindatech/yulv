@@ -53,6 +53,11 @@ func (s *Server) Setup(cfg *config.Config) error {
 		return err
 	}
 
+	err = service.SetupCacheConfig()
+	if err != nil {
+		return err
+	}
+
 	s.server = &http.Server{
 		Addr:           fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler:        r,

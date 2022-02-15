@@ -3,6 +3,7 @@ package service
 const cacheUser = "users"
 const cacheIP = "ip"
 const cacheReqRule = "reqrule"
+const cacheRespRule = "resprule"
 
 type cacheHead struct {
 	ID        uint        `json:"id"`
@@ -29,5 +30,24 @@ type ip struct {
 	Data []string `json:"data"`
 }
 
-type rule struct {
+func SetupCacheConfig() error {
+	userSrv := DBUser{}
+	err := userSrv.Distribute()
+	if err != nil {
+		return err
+	}
+
+	ipSrv := IP{}
+	err = ipSrv.Distribute()
+	if err != nil {
+		return err
+	}
+
+	ruleSrv := Rule{}
+	err = ruleSrv.Distribute()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
