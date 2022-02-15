@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/api/dbuser']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
@@ -17,11 +18,13 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/api/dbuser']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
         <el-button
+          v-permission="['POST:/api/dbuser/distribute']"
           icon="el-icon-circle-plus-outline"
           type="success"
           @click="distribute"
@@ -58,16 +61,19 @@
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/api/dbuser/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['PUT:/api/dbuser/:id/db']"
             type="primary"
             size="mini"
             @click="LinkDatabas(scope.row.id, scope.row.db)"
           >关联数据库</el-button>
           <el-button
+            v-permission="['DELETE:/api/dbuser/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

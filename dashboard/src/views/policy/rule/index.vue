@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/api/rule']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
@@ -22,16 +23,19 @@
           @click="reload"
         >重置</el-button>
         <el-button
+          v-permission="['POST:/api/rule']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
         <el-button
+          v-permission="['POST:/api/rule/distribute']"
           icon="el-icon-circle-plus-outline"
           type="success"
           @click="distribute"
         >下发配置</el-button>
         <el-button
+          v-permission="['GET:/api/rule/sql/test']"
           icon="el-icon-circle-plus-outline"
           type="info"
           @click="testSql"
@@ -76,11 +80,13 @@
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/api/rule/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['DELETE:/api/rule/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"

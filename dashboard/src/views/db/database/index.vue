@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/api/db']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">
@@ -18,12 +19,14 @@
         >重置</el-button>
         <el-button
           v-if="!userDbs"
+          v-permission="['POST:/api/db']"
           icon="el-icon-circle-plus-outline"
           type="primary"
           @click="openAdd"
         >新增</el-button>
         <el-button
           v-if="userDbs"
+          v-permission="['PUT:/api/dbuser/:id/db']"
           icon="el-icon-circle-plus-outline"
           type="success"
           @click="handleUserDbs"
@@ -70,11 +73,13 @@
       <el-table-column v-if="!userDbs" align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button
+            v-permission="['PUT:/api/db/:id']"
             type="success"
             size="mini"
             @click="handleEdit(scope.row.id)"
           >编辑</el-button>
           <el-button
+            v-permission="['DELETE:/api/db/:id']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row.id)"
