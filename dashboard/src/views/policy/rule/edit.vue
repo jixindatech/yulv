@@ -1,10 +1,21 @@
 <template>
   <el-dialog
-    :title="title"
     :visible.sync="visible"
     width="500px"
     :before-close="handleClose"
   >
+    <template slot="title">
+      <span style="position:relative">
+        <span>{{ title }}</span>
+        <el-tooltip effect="dark" placement="top">
+          <div slot="content">
+            <p>匹配项中,需要至少匹配一个条件</p>
+          </div>
+          <i class="el-icon-question table-msg" />
+        </el-tooltip>
+      </span>
+    </template>
+
     <el-form
       ref="formData"
       :rules="rules"
@@ -17,7 +28,18 @@
       <el-form-item label="规则名称" prop="name">
         <el-input v-model="formData.name" :disabled="typeof(formData.id) !== 'undefined' && formData.id !== 0" maxlength="30" />
       </el-form-item>
-      <el-form-item label="客户IP" prop="ip">
+      <el-form-item prop="ip">
+        <template slot="label">
+          <span style="position:relative">
+            <span>客户IP</span>
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <p>支持CIDR形式的IP</p>
+              </div>
+              <i class="el-icon-question table-msg" />
+            </el-tooltip>
+          </span>
+        </template>
         <el-input v-model="formData.ip" maxlength="254" />
       </el-form-item>
       <el-form-item label="数据库用户" prop="user">
@@ -34,7 +56,18 @@
       <el-form-item label="规则水印" prop="sql">
         <el-input v-model="formData.sql" maxlength="254" />
       </el-form-item>
-      <el-form-item label="匹配方式" prop="match">
+      <el-form-item prop="match">
+        <template slot="label">
+          <span style="position:relative">
+            <span>匹配方式</span>
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <p>选择了匹配方式之后,必须填写匹配内容</p>
+              </div>
+              <i class="el-icon-question table-msg" />
+            </el-tooltip>
+          </span>
+        </template>
         <el-select v-model="formData.match" placeholder="请选择匹配方式">
           <el-option v-for="(item,index) in RULE_MATCH_OPTIONS" :key="index" :label="item.label" :value="item.value" />
         </el-select>
@@ -42,7 +75,19 @@
       <el-form-item v-if="formData.match !== undefined" label="匹配内容" prop="pattern">
         <el-input v-model="formData.pattern" maxlength="254" />
       </el-form-item>
-      <el-form-item label="影响行数" prop="rows">
+      <el-form-item prop="rows">
+        <template slot="label">
+          <span style="position:relative">
+            <span>影响行数</span>
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <p>默认影响行数为0,不进行匹配,匹配条件为大于或等于该值</p>
+              </div>
+              <i class="el-icon-question table-msg" />
+            </el-tooltip>
+          </span>
+        </template>
+
         <el-input v-model.number="formData.rows" />
       </el-form-item>
       <el-form-item label="匹配动作" prop="action">

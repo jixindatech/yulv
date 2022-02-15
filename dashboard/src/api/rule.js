@@ -38,10 +38,11 @@ export function deleteById(id) {
   })
 }
 
-export function test() {
+export function test(data) {
   return request({
     url: `/api/rule/sql/test`,
-    method: 'get'
+    method: 'get',
+    params: data
   })
 }
 
