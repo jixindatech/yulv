@@ -113,7 +113,11 @@ func (d *IP) Distribute() error {
 	items = append(items, ipallow)
 	items = append(items, ipdeny)
 
-	str, err := json.Marshal(items)
+	config := make(map[string]interface{})
+	config["values"] = items
+	config["timestamp"] = time.Now().Unix()
+
+	str, err := json.Marshal(config)
 	if err != nil {
 		return err
 	}

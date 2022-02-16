@@ -1,6 +1,6 @@
 package service
 
-const cacheUser = "users"
+const cacheUser = "user"
 const cacheIP = "ip"
 const cacheReqRule = "reqrule"
 const cacheRespRule = "resprule"

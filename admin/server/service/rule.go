@@ -4,6 +4,7 @@ import (
 	"admin/server/cache"
 	"admin/server/models"
 	"encoding/json"
+	"time"
 )
 
 type Rule struct {
@@ -126,7 +127,11 @@ func (d *Rule) Distribute() error {
 		respRules = []cacheHead{}
 	}
 
-	str, err := json.Marshal(reqRules)
+	config := make(map[string]interface{})
+	config["values"] = reqRules
+	config["timestamp"] = time.Now().Unix()
+
+	str, err := json.Marshal(config)
 	if err != nil {
 		return err
 	}
@@ -136,7 +141,10 @@ func (d *Rule) Distribute() error {
 		return err
 	}
 
-	str, err = json.Marshal(respRules)
+	config["values"] = respRules
+	config["timestamp"] = time.Now().Unix()
+
+	str, err = json.Marshal(config)
 	if err != nil {
 		return err
 	}

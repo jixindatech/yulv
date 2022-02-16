@@ -4,6 +4,7 @@ import (
 	"admin/server/cache"
 	"admin/server/models"
 	"encoding/json"
+	"time"
 )
 
 type DBUser struct {
@@ -105,7 +106,11 @@ func (d *DBUser) Distribute() error {
 		data = items
 	}
 
-	str, err := json.Marshal(data)
+	config := make(map[string]interface{})
+	config["values"] = data
+	config["timestamp"] = time.Now().Unix()
+
+	str, err := json.Marshal(config)
 	if err != nil {
 		return err
 	}
