@@ -84,8 +84,8 @@ func (d *DBUser) Distribute() error {
 			dbItem.Name = db.Name
 			dbItem.User = db.User
 			dbItem.Password = db.Password
-			db.Host = db.Host
-			db.Port = db.Port
+			dbItem.Host = db.Host
+			dbItem.Port = db.Port
 
 			item.Database = append(item.Database, dbItem)
 		}

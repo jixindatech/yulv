@@ -16,7 +16,7 @@ type database struct {
 	Password string `json:"password"`
 	Name     string `json:"name"`
 	Host     string `json:"host"`
-	Port     int    `json:"port"`
+	Port     uint32 `json:"port"`
 }
 
 type dbUser struct {
