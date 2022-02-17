@@ -91,6 +91,24 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/event',
+    component: Layout,
+    meta: { title: '事件管理', icon: 'el-icon-s-help' },
+    redirect: '/access',
+    children: [{
+      path: 'access',
+      name: 'Access',
+      component: () => import('@/views/event/access/index'),
+      meta: { title: '请求事件', icon: 'dashboard' }
+    },
+    {
+      path: 'rule',
+      name: 'Rule',
+      component: () => import('@/views/event/rule/index'),
+      meta: { title: '规则事件', icon: 'dashboard' }
+    }]
+  },
+  {
     path: '/system',
     component: Layout,
     meta: { title: '系统管理', icon: 'el-icon-s-help' },
