@@ -48,3 +48,5 @@ p, admin, ^/api/rule/\+?[1-9][0-9]*$, PUT
 p, admin, ^/api/rule/\+?[1-9][0-9]*$, DELETE
 p, admin, ^/api/rule/distribute$, POST
 p, admin, ^/api/rule/sql/test$, GET
+
+p, admin, ^/api/access, GET

@@ -41,7 +41,7 @@ type Rbac struct {
 }
 
 type Redis struct {
-	Type      string `mapstructer:"type"`
+	Type      string `mapstructure:"type"`
 	Host      string `mapstructure:"host"`
 	Port      int    `mapstructure:"port"`
 	Password  string `mapstructure:"password"`
@@ -50,27 +50,30 @@ type Redis struct {
 }
 
 type Memory struct {
-	PurgeTime time.Duration `mapstructer:"purge_time"`
+	PurgeTime time.Duration `mapstructure:"purge_time"`
 }
 
 type Elasticsearch struct {
-	Host     string `mapstructure:"host" json:"host" yaml:"host"`
-	Timeout  string `mapstructure:"timeout" json:"timeout" yaml:"timeout"`
-	Index    string `mapstructure:"index" json:"index" yaml:"index"`
-	User     string `mapstructure:"user" json:"user" yaml:"user"`
-	Password string `mapstructure:"password" json:"password" yaml:"password"`
+	Host        string `mapstructure:"host"`
+	Timeout     string `mapstructure:"timeout"`
+	Index       string `mapstructure:"index"`
+	User        string `mapstructure:"user"`
+	Password    string `mapstructure:"password"`
+	AccessIndex string `mapstructure:"access-index"`
+	RuleIndex   string `mapstructure:"rule-index"`
 }
 
 type Config struct {
-	RunMode  string    `mapstructure:"run_mode"`
-	Log      *Log      `mapstructure:"log"`
-	Server   *Server   `mapstructure:"server"`
-	Database *DataBase `mapstructer:"database"`
-	Rbac     *Rbac     `mapstructer:"rbac"`
-	App      *App      `mapstructer:"app"`
-	Cache    string    `mapstructer:"cache"`
-	Redis    *Redis    `mapstructer:"redis"`
-	Memory   *Memory   `mapstructer:"memory"`
+	RunMode  string         `mapstructure:"run_mode"`
+	Log      *Log           `mapstructure:"log"`
+	Server   *Server        `mapstructure:"server"`
+	Database *DataBase      `mapstructure:"database"`
+	Rbac     *Rbac          `mapstructure:"rbac"`
+	App      *App           `mapstructure:"app"`
+	Cache    string         `mapstructure:"cache"`
+	Redis    *Redis         `mapstructure:"redis"`
+	Memory   *Memory        `mapstructure:"memory"`
+	ES       *Elasticsearch `mapstructure:"elasticsearch"`
 }
 
 var config *Config

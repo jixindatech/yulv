@@ -16,7 +16,7 @@ type Model struct {
 	UpdatedAt time.Time `json:"updateAt"`
 }
 
-func Setup(cfg *config.DataBase) error {
+func Setup(cfg *config.DataBase, esConfig *config.Elasticsearch) error {
 	var err error
 	if cfg.Type == "mysql" {
 		db, err = gorm.Open(cfg.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -54,7 +54,7 @@ func Setup(cfg *config.DataBase) error {
 		Rule{},
 	)
 
-	return nil
+	return SetupES(esConfig)
 }
 
 func CloseDB() {

@@ -101,6 +101,7 @@ func Setup(mode string) (g *gin.Engine, err error) {
 		apis.POST("/rule/distribute", api.DistributeRule)
 		apis.GET("/rule/sql/test", api.GetRuleTest)
 
+		apis.GET("/access", api.GetAccessEvents)
 	}
 
 	return r, nil
