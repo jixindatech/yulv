@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/access'
+import { getList } from '@/api/ruleevent'
 export default {
   data() {
     return {
