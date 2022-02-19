@@ -50,6 +50,8 @@ var MsgFlags = map[int]string{
 	RuleDeleteFailed: "删除rule失败",
 
 	AccessEventGetFailed: "获取access失败",
+
+	RuleEventGetFailed: "获取rule失败",
 }
 
 func GetMsg(code int) string {

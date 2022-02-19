@@ -46,4 +46,6 @@ const (
 	RuleDeleteFailed = 90003
 
 	AccessEventGetFailed = 11001
+
+	RuleEventGetFailed = 12001
 )
