@@ -38,7 +38,7 @@ func (a *AccessEvent) GetList() (map[string]interface{}, error) {
 		},
 	}
 
-	data, err := models.EsSearch("access", query)
+	data, err := models.EsSearchList("access", query, a.Page, a.PageSize)
 	if err != nil {
 		return nil, err
 	}

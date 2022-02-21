@@ -121,7 +121,7 @@ func (d *Rule) Distribute() error {
 	}
 
 	if len(reqRules) == 0 {
-		respRules = []cacheHead{}
+		reqRules = []cacheHead{}
 	}
 	if len(respRules) == 0 {
 		respRules = []cacheHead{}

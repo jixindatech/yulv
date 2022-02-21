@@ -38,7 +38,7 @@ func (r *RuleEvent) GetList() (map[string]interface{}, error) {
 		},
 	}
 
-	data, err := models.EsSearch("rule", query)
+	data, err := models.EsSearchList("rule", query, r.Page, r.PageSize)
 	if err != nil {
 		return nil, err
 	}

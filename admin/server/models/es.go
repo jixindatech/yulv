@@ -38,52 +38,6 @@ func SetupES(cfg *config.Elasticsearch) error {
 	return nil
 }
 
-func esSearchList(index string, query map[string]interface{}, page, pageSize int) (map[string]interface{}, error) {
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		return nil, fmt.Errorf("Error encoding query: %s", err)
-	}
-
-	res, err := esClient.Search(
-		esClient.Search.WithContext(context.Background()),
-		esClient.Search.WithIndex(index),
-		esClient.Search.WithBody(&buf),
-		esClient.Search.WithFrom((page-1)*pageSize),
-		esClient.Search.WithSize(pageSize),
-		esClient.Search.WithTrackTotalHits(true),
-		esClient.Search.WithPretty(),
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("Error getting response: %s", err)
-	}
-
-	if res.IsError() {
-		var e map[string]interface{}
-		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
-			return nil, fmt.Errorf("Error parsing the response body: %s", err)
-		} else {
-			return nil, fmt.Errorf("[%s] %s: %s",
-				res.Status(),
-				e["error"].(map[string]interface{})["type"],
-				e["error"].(map[string]interface{})["reason"],
-			)
-		}
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
-	}(res.Body)
-
-	var r map[string]interface{}
-	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		return nil, fmt.Errorf("Error parsing the response body: %s", err)
-	}
-
-	return r, nil
-}
 func EsSearch(index string, query map[string]interface{}) (map[string]interface{}, error) {
 	if index == "access" {
 		index = esCfg.AccessIndex
@@ -138,6 +92,14 @@ func EsSearch(index string, query map[string]interface{}) (map[string]interface{
 }
 
 func EsSearchList(index string, query map[string]interface{}, page, pageSize int) (map[string]interface{}, error) {
+	if index == "access" {
+		index = esCfg.AccessIndex
+	} else if index == "rule" {
+		index = esCfg.RuleIndex
+	} else {
+		return nil, fmt.Errorf("%s", "incorrect es index")
+	}
+
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		return nil, fmt.Errorf("Error encoding query: %s", err)
