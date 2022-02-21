@@ -36,13 +36,11 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
@@ -58,7 +56,7 @@ export const constantRoutes = [
     path: '/db',
     component: Layout,
     meta: { title: '数据库管理', icon: 'el-icon-s-help' },
-    redirect: 'database',
+    redirect: '/db/database',
     children: [{
       path: 'database',
       name: 'Database',
@@ -75,7 +73,7 @@ export const constantRoutes = [
   {
     path: '/policy',
     component: Layout,
-    redirect: 'ip',
+    redirect: '/policy/ip',
     meta: { title: '策略管理', icon: 'el-icon-s-help' },
     children: [{
       path: 'ip',
@@ -94,7 +92,7 @@ export const constantRoutes = [
     path: '/event',
     component: Layout,
     meta: { title: '事件管理', icon: 'el-icon-s-help' },
-    redirect: '/access',
+    redirect: '/event/access',
     children: [{
       path: 'access',
       name: 'Access',
@@ -102,8 +100,8 @@ export const constantRoutes = [
       meta: { title: '请求事件', icon: 'dashboard' }
     },
     {
-      path: 'rule',
-      name: 'Rule',
+      path: 'erule',
+      name: 'ERule',
       component: () => import('@/views/event/rule/index'),
       meta: { title: '规则事件', icon: 'dashboard' }
     }]

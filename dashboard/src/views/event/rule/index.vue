@@ -44,7 +44,7 @@
       <el-table-column align="center" prop="_source.user" label="数据库用户" />
       <el-table-column align="center" prop="_source.database" label="数据库" />
       <el-table-column align="center" prop="_source.event" label="事件类型" />
-      <el-table-column align="center" prop="_source.type" label="请求类型" />
+      <el-table-column align="center" prop="_source.sqltype" label="请求类型" />
       <el-table-column align="center" prop="_source.sql" label="请求内容" />
       <el-table-column align="center" prop="_source.fingerprint" label="请求水印" />
       <el-table-column align="center" prop="_source.rows" label="影响行数" />
@@ -74,6 +74,51 @@ export default {
     return {
       queryTime: [],
       query: {},
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近30分钟',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 1800 * 1000)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一小时',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近24小时',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', [start, end])
+          }
+        },
+        {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        },
+        {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       edit: {
         title: '',
         visible: false,
