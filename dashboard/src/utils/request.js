@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
@@ -73,12 +74,20 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    if (error.response) {
+      const res = error.response.data
+      if (res.status === 401) {
+        console.log('401')
+        router.replace('/login')
+      } else {
+        Message({
+          message: error.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return Promise.reject(error)
+      }
+    }
   }
 )
 
