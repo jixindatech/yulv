@@ -8,7 +8,9 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"net"
 	"net/http"
+	"strings"
 )
 
 type ipForm struct {
@@ -33,6 +35,32 @@ func AddIP(c *gin.Context) {
 		errCode = e.ERROR
 		appG.Response(httpCode, errCode, err.Error(), nil)
 		return
+	}
+
+	if len(form.IP) == 0 {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, "invalid ip", nil)
+		return
+	}
+
+	for _, ip := range form.IP {
+		if strings.Contains(ip, "/") {
+			_, _, err := net.ParseCIDR(ip)
+			if err != nil {
+				httpCode = e.InvalidParams
+				errCode = e.ERROR
+				appG.Response(httpCode, errCode, err.Error(), nil)
+				return
+			}
+		} else {
+			if net.ParseIP(ip) == nil {
+				httpCode = e.InvalidParams
+				errCode = e.ERROR
+				appG.Response(httpCode, errCode, "invalid ip", nil)
+				return
+			}
+		}
 	}
 
 	ips, err := json.Marshal(form.IP)
@@ -85,6 +113,31 @@ func UpdateIP(c *gin.Context) {
 		errCode = e.ERROR
 		appG.Response(httpCode, errCode, err.Error(), nil)
 		return
+	}
+	if len(form.IP) == 0 {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, "invalid ip", nil)
+		return
+	}
+
+	for _, ip := range form.IP {
+		if strings.Contains(ip, "/") {
+			_, _, err := net.ParseCIDR(ip)
+			if err != nil {
+				httpCode = e.InvalidParams
+				errCode = e.ERROR
+				appG.Response(httpCode, errCode, err.Error(), nil)
+				return
+			}
+		} else {
+			if net.ParseIP(ip) == nil {
+				httpCode = e.InvalidParams
+				errCode = e.ERROR
+				appG.Response(httpCode, errCode, "invalid ip", nil)
+				return
+			}
+		}
 	}
 
 	ips, err := json.Marshal(form.IP)

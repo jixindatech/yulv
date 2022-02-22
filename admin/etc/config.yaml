@@ -15,9 +15,9 @@ server:
 
 database:
   type : mysql
-  user : root
+  user : yulv
   password : 123456
-  host : 127.0.0.1:3306
+  host : 192.168.91.100:3306
   name : yulv
   table-prefix :
 
