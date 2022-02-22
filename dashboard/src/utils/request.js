@@ -75,7 +75,7 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     if (error.response) {
-      const res = error.response.data
+      const res = error.response
       if (res.status === 401) {
         console.log('401')
         router.replace('/login')
