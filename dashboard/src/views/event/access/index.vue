@@ -1,5 +1,6 @@
 <template>
   <div
+    v-permission="['GET:/api/event/access']"
     class="app-container"
   >
     <el-form :inline="true" :model="query" size="mini">

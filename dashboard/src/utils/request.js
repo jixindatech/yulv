@@ -79,6 +79,7 @@ service.interceptors.response.use(
       if (res.status === 401) {
         console.log('401')
         router.replace('/login')
+        return Promise.reject(error)
       } else {
         Message({
           message: error.message,
