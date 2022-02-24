@@ -164,8 +164,8 @@ func GetDBUser(c *gin.Context) {
 
 type queryDBUserForm struct {
 	Name     string `form:"name" validate:"max=254"`
-	Page     int    `form:"page" validate:"required,min=1,max=50"`
-	PageSize int    `form:"size" validate:"required,min=1"`
+	Page     int    `form:"page" validate:"omitempty,min=0"`
+	PageSize int    `form:"size" validate:"omitempty,min=0,max=50"`
 }
 
 func GetDBUsers(c *gin.Context) {

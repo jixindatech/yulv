@@ -59,20 +59,24 @@ func GetDBs(query map[string]interface{}, page int, pageSize int) ([]*DB, uint, 
 	var dbItems []*DB
 	var count uint
 	var err error
+	if page > 0 {
+		pageNum := (page - 1) * pageSize
 
-	pageNum := (page - 1) * pageSize
+		var name string
+		if query["name"] != nil {
+			name = query["name"].(string)
+		}
 
-	var name string
-	if query["name"] != nil {
-		name = query["name"].(string)
-	}
-
-	if len(name) > 0 {
-		name = "%" + name + "%"
-		err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&dbItems).Count(&count).Error
+		if len(name) > 0 {
+			name = "%" + name + "%"
+			err = db.Where("name like ?", name).Offset(pageNum).Limit(pageSize).Find(&dbItems).Count(&count).Error
+		} else {
+			err = db.Offset(pageNum).Limit(pageSize).Find(&dbItems).Count(&count).Error
+		}
 	} else {
-		err = db.Offset(pageNum).Limit(pageSize).Find(&dbItems).Count(&count).Error
+		err = db.Model(DB{}).Find(&dbItems).Count(&count).Error
 	}
+
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, count, err
 	}

@@ -103,6 +103,10 @@ func Setup(mode string) (g *gin.Engine, err error) {
 
 		apis.GET("/event/access", api.GetAccessEvents)
 		apis.GET("/event/rule", api.GetRuleEvents)
+
+		apis.GET("/event/info/access", api.GetAccessEventsInfo)
+		apis.GET("/event/info/rule", api.GetRuleEvents)
+
 	}
 
 	return r, nil
