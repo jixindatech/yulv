@@ -1,18 +1,199 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <panel-group :db-total="dbTotal" :db-user-total="dbUserTotal" :event-total="eventTotal" :fingerprint-total="fingerprintTotal" />
+    <el-form :inline="true" :model="query" size="mini">
+      <el-form-item>
+        <el-date-picker
+          v-model="queryTime"
+          type="datetimerange"
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder=""
+          end-placeholder=""
+          value-format="timestamp"
+          align="right"
+        />
+      </el-form-item>
+      <el-form-item label="数据库" prop="database">
+        <el-select v-model="query.database" placeholder="请选择数据库">
+          <el-option v-for="(item,index) in databases" :key="index" :label="item" :value="item" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          icon="el-icon-search"
+          type="primary"
+          @click="queryData"
+        >查询</el-button>
+        <el-button
+          icon="el-icon-refresh"
+          @click="reload"
+        >重置</el-button>
+      </el-form-item>
+    </el-form>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <FingerPrintLineChart :data="fingerprintInfo" />
+      </el-card>
+    </el-row>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <el-table
+          :data="fingerprintList"
+          stripe
+          border
+          style="width: 100%"
+        >
+          <el-table-column align="center" type="index" label="序号" width="60" />
+          <el-table-column align="center" prop="key" label="指纹" />
+          <el-table-column align="center" prop="num" label="数量" width="80" />
+        </el-table>
+      </el-card>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+
+import PanelGroup from './components/PanelGroup'
+import FingerPrintLineChart from './components/FingerPrintLineChart.vue'
+import * as db from '@/api/db'
+import * as dbuser from '@/api/dbuser'
+import * as access from '@/api/access'
 
 export default {
   name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
+  components: { PanelGroup, FingerPrintLineChart },
+  data() {
+    return {
+      dbTotal: 0,
+      dbUserTotal: 0,
+      eventTotal: 0,
+      fingerprintTotal: 0,
+
+      flag: false, // 判断是否显示图表组件
+      categoryTotal: {}, // 每个分类下的文章数
+      topInfo: {}, // 查询近6个月发布文章数
+
+      query: {},
+      databases: [],
+      queryTime: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近30分钟',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 1800 * 1000)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一小时',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近24小时',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', [start, end])
+          }
+        },
+        {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        },
+        {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      fingerprintInfo: {},
+      fingerprintList: []
+    }
+  },
+  async created() {
+    this.fetchData()
+  },
+  methods: {
+    async fetchData() {
+      this.queryTime[0] = new Date().getTime() - 3600 * 1000 * 24 * 7
+      this.queryTime[1] = new Date().getTime()
+      this.getDatabase()
+      this.getDbUser()
+      if (this.queryTime.length > 0) {
+        this.query['start'] = this.queryTime[0]
+        this.query['end'] = this.queryTime[1]
+      }
+      const res = await access.getInfo(this.query)
+      this.fingerprintInfo = res['data']['data']
+      this.transferInfoToList(this.fingerprintInfo)
+    },
+
+    async getDatabase() {
+      const res = await db.getList({}, 0, 0)
+      const dbs = res['data']['list']
+
+      this.databases = []
+      var item
+      for (item of dbs) {
+        this.databases.push(item.name)
+      }
+      this.dbTotal = res['data']['total']
+    },
+
+    async getDbUser() {
+      const res = await dbuser.getList({}, 0, 0)
+      this.dbUserTotal = res['data']['total']
+    },
+
+    queryData() {
+      if (this.queryTime.length > 0) {
+        this.query['start'] = this.queryTime[0]
+        this.query['end'] = this.queryTime[1]
+      }
+      this.fetchData()
+    },
+
+    reload() {
+      this.query = {}
+      this.queryTime[0] = new Date().getTime() - 3600 * 1000 * 24 * 7
+      this.queryTime[1] = new Date().getTime()
+      if (this.queryTime.length > 0) {
+        this.query['start'] = this.queryTime[0]
+        this.query['end'] = this.queryTime[1]
+      }
+
+      this.fetchData()
+    },
+
+    transferInfoToList(info) {
+      const keys = info['item']
+      const nums = info['num']
+      this.fingerprintList = []
+      for (var i = 0; i < keys.length; i++) {
+        const tmp = {
+          'key': keys[i],
+          'num': nums[i]
+        }
+        this.fingerprintList.push(tmp)
+      }
+    }
   }
 }
 </script>

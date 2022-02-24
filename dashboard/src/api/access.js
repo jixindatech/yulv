@@ -7,3 +7,11 @@ export function getList(query, current = 1, size = 10) {
     params: { ...query, page: current, size }
   })
 }
+
+export function getInfo(query) {
+  return request({
+    url: `/api/event/info/access`,
+    method: 'get',
+    params: { ...query }
+  })
+}
