@@ -52,3 +52,4 @@ p, admin, ^/api/rule/sql/test$, GET
 p, admin, ^/api/event/access, GET
 p, admin, ^/api/event/rule, GET
 p, admin, ^/api/event/info/access, GET
+p, admin, ^/api/event/info/rule, GET
