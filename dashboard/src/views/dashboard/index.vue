@@ -1,6 +1,18 @@
 <template>
-  <div class="dashboard-container">
-    <panel-group :db-total="dbTotal" :db-user-total="dbUserTotal" :event-total="eventTotal" :fingerprint-total="fingerprintTotal" />
+  <div
+    v-permission="['GET:/api/db',
+                   'GET:/api/dbuser',
+                   'GET:/api/event/info/access',
+                   'GET:/api/event/info/rule'
+    ]"
+    class="dashboard-container"
+  >
+    <panel-group
+      :db-total="dbTotal"
+      :db-user-total="dbUserTotal"
+      :event-total="eventTotal"
+      :rule-total="ruleTotal"
+    />
     <el-form :inline="true" :model="query" size="mini">
       <el-form-item>
         <el-date-picker
@@ -33,13 +45,32 @@
     </el-form>
     <el-row style="margin-top:30px">
       <el-card>
-        <FingerPrintLineChart :data="fingerprintInfo" />
+        <FingerPrintLineChart :data="fingerprintInfo" name="事件指纹分布" />
       </el-card>
     </el-row>
     <el-row style="margin-top:30px">
       <el-card>
         <el-table
           :data="fingerprintList"
+          stripe
+          border
+          style="width: 100%"
+        >
+          <el-table-column align="center" type="index" label="序号" width="60" />
+          <el-table-column align="center" prop="key" label="指纹" />
+          <el-table-column align="center" prop="num" label="数量" width="80" />
+        </el-table>
+      </el-card>
+    </el-row>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <FingerPrintLineChart :data="ruleFingerprintInfo" name="规则事件指纹分布" />
+      </el-card>
+    </el-row>
+    <el-row style="margin-top:30px">
+      <el-card>
+        <el-table
+          :data="ruleFingerprintList"
           stripe
           border
           style="width: 100%"
@@ -59,7 +90,7 @@ import PanelGroup from './components/PanelGroup'
 import FingerPrintLineChart from './components/FingerPrintLineChart.vue'
 import * as db from '@/api/db'
 import * as dbuser from '@/api/dbuser'
-import * as access from '@/api/access'
+import * as event from '@/api/event'
 
 export default {
   name: 'Dashboard',
@@ -69,7 +100,7 @@ export default {
       dbTotal: 0,
       dbUserTotal: 0,
       eventTotal: 0,
-      fingerprintTotal: 0,
+      ruleTotal: 0,
 
       flag: false, // 判断是否显示图表组件
       categoryTotal: {}, // 每个分类下的文章数
@@ -124,7 +155,10 @@ export default {
         }]
       },
       fingerprintInfo: {},
-      fingerprintList: []
+      fingerprintList: [],
+      ruleFingerprintInfo: {},
+      ruleFingerprintList: []
+
     }
   },
   async created() {
@@ -140,9 +174,17 @@ export default {
         this.query['start'] = this.queryTime[0]
         this.query['end'] = this.queryTime[1]
       }
-      const res = await access.getInfo(this.query)
+      var res = await event.getInfo(this.query)
       this.fingerprintInfo = res['data']['data']
-      this.transferInfoToList(this.fingerprintInfo)
+      var tmpData = this.transferInfoToList(this.fingerprintInfo)
+      this.fingerprintList = tmpData.data
+      this.eventTotal = tmpData.num
+
+      res = await event.getRuleInfo(this.query)
+      this.ruleFingerprintInfo = res['data']['data']
+      tmpData = this.transferInfoToList(this.ruleFingerprintInfo)
+      this.ruleFingerprintList = tmpData.data
+      this.ruleTotal = tmpData.num
     },
 
     async getDatabase() {
@@ -185,14 +227,16 @@ export default {
     transferInfoToList(info) {
       const keys = info['item']
       const nums = info['num']
-      this.fingerprintList = []
+      var tmpData = { data: [], num: 0 }
       for (var i = 0; i < keys.length; i++) {
         const tmp = {
           'key': keys[i],
           'num': nums[i]
         }
-        this.fingerprintList.push(tmp)
+        tmpData.num += nums[i]
+        tmpData.data.push(tmp)
       }
+      return tmpData
     }
   }
 }

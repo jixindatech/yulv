@@ -33,7 +33,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            事件总数
+            请求数量
           </div>
           <count-to :start-val="0" :end-val="eventTotal" :duration="3000" class="card-panel-num" />
         </div>
@@ -46,9 +46,9 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            水印数量
+            匹配数量
           </div>
-          <count-to :start-val="0" :end-val="fingerprintTotal" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="ruleTotal" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -76,7 +76,7 @@ export default {
       type: Number,
       default: 0
     },
-    fingerprintTotal: {
+    ruleTotal: {
       type: Number,
       default: 0
     }

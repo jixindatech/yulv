@@ -31,6 +31,10 @@ export default {
       default: function() {
         return {}
       }
+    },
+    name: {
+      type: String,
+      default: '指纹分布'
     }
   },
   data() {
@@ -68,7 +72,7 @@ export default {
     setOptions({ expectedData, actualData } = {}) {
       this.chart.setOption({
         title: {
-          text: '指纹分布',
+          text: this.name,
           left: 'left'
         },
         xAxis: {

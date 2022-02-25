@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/ruleevent'
+import { getRuleList } from '@/api/event'
 export default {
   data() {
     return {
@@ -146,7 +146,7 @@ export default {
         this.query['start'] = this.queryTime[0]
         this.query['end'] = this.queryTime[1]
       }
-      await getList(
+      await getRuleList(
         this.query,
         this.page.current,
         this.page.size
