@@ -5,11 +5,14 @@ import "admin/server/models"
 type DB struct {
 	ID uint
 
-	Name     string
-	User     string
-	Password string
-	Host     string
-	Port     uint32
+	Name      string
+	User      string
+	Password  string
+	Host      string
+	Charset   string
+	Collation string
+
+	Port uint32
 
 	Remark string
 
@@ -37,12 +40,14 @@ func (d *DB) GetList() ([]*models.DB, uint, error) {
 
 func (d *DB) Save() error {
 	data := map[string]interface{}{
-		"name":     d.Name,
-		"user":     d.User,
-		"password": d.Password,
-		"host":     d.Host,
-		"port":     d.Port,
-		"remark":   d.Remark,
+		"name":      d.Name,
+		"user":      d.User,
+		"password":  d.Password,
+		"host":      d.Host,
+		"port":      d.Port,
+		"charset":   d.Charset,
+		"collation": d.Collation,
+		"remark":    d.Remark,
 	}
 
 	var err error

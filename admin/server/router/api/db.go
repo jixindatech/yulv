@@ -11,11 +11,13 @@ import (
 )
 
 type dbForm struct {
-	Name     string `json:"name" validate:"required,max=254"`
-	User     string `json:"user" validate:"required,max=254"`
-	Password string `json:"password" validate:"required,max=254"`
-	Host     string `json:"host" validate:"required,max=254"`
-	Port     uint32 `json:"port" validate:"required,min=1,max=65535"`
+	Name      string `json:"name" validate:"required,max=254"`
+	User      string `json:"user" validate:"required,max=254"`
+	Password  string `json:"password" validate:"required,max=254"`
+	Host      string `json:"host" validate:"required,max=254"`
+	Port      uint32 `json:"port" validate:"required,min=1,max=65535"`
+	Charset   string `json:"charset" validate:"required,max=254"`
+	Collation string `json:"collation" validate:"required,max=254"`
 
 	Remark string `json:"remark" validate:"max=254"`
 }
@@ -37,12 +39,14 @@ func AddDB(c *gin.Context) {
 	}
 
 	dbSrv := service.DB{
-		Name:     form.Name,
-		User:     form.User,
-		Password: form.Password,
-		Host:     form.Host,
-		Port:     form.Port,
-		Remark:   form.Remark,
+		Name:      form.Name,
+		User:      form.User,
+		Password:  form.Password,
+		Host:      form.Host,
+		Port:      form.Port,
+		Charset:   form.Charset,
+		Collation: form.Collation,
+		Remark:    form.Remark,
 	}
 
 	err = dbSrv.Save()
@@ -83,13 +87,15 @@ func UpdateDB(c *gin.Context) {
 	}
 
 	dbSrv := service.DB{
-		ID:       formId.ID,
-		Name:     form.Name,
-		User:     form.User,
-		Password: form.Password,
-		Host:     form.Host,
-		Port:     form.Port,
-		Remark:   form.Remark,
+		ID:        formId.ID,
+		Name:      form.Name,
+		User:      form.User,
+		Password:  form.Password,
+		Host:      form.Host,
+		Port:      form.Port,
+		Charset:   form.Charset,
+		Collation: form.Collation,
+		Remark:    form.Remark,
 	}
 
 	err = dbSrv.Save()

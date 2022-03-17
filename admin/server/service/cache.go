@@ -12,11 +12,13 @@ type cacheHead struct {
 }
 
 type database struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Host     string `json:"host"`
-	Port     uint32 `json:"port"`
+	User      string `json:"user"`
+	Password  string `json:"password"`
+	Name      string `json:"name"`
+	Host      string `json:"host"`
+	Port      uint32 `json:"port"`
+	Charset   string `json:"charset"`
+	Collation string `json:"collation"`
 }
 
 type dbUser struct {

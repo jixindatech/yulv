@@ -8,25 +8,29 @@ import (
 type DB struct {
 	Model
 
-	Name     string `json:"name" gorm:"column:name;unique;comment:'数据库名称'"`
-	User     string `json:"user" gorm:"column:user;comment:'数据库用户'"`
-	Password string `json:"password" gorm:"column:password;comment:'数据库用户'"`
-	Host     string `json:"host" gorm:"column:host;comment:'数据库服务器IP'"`
-	Port     uint32 `json:"port" gorm:"column:port;comment:'数据库服务器Port'"`
-
-	Remark string `json:"remark" gorm:"column:remark;comment:'备注'"`
+	Name      string `json:"name" gorm:"column:name;unique;comment:'数据库名称'"`
+	User      string `json:"user" gorm:"column:user;comment:'数据库用户'"`
+	Password  string `json:"password" gorm:"column:password;comment:'数据库用户'"`
+	Host      string `json:"host" gorm:"column:host;comment:'数据库服务器IP'"`
+	Port      uint32 `json:"port" gorm:"column:port;comment:'数据库服务器Port'"`
+	Charset   string `json:"charset" gorm:"column:charset;comment:'数据库字符集'"`
+	Collation string `json:"collation" gorm:"column:collation;comment:'数据库字符序'"`
+	Remark    string `json:"remark" gorm:"column:remark;comment:'备注'"`
 
 	DBUser []DBUser `json:"dbuser" gorm:"many2many:user_db;"`
 }
 
 func AddDB(data map[string]interface{}) error {
 	dbUser := DB{
-		Name:     data["name"].(string),
-		User:     data["user"].(string),
-		Password: data["password"].(string),
-		Host:     data["host"].(string),
-		Port:     data["port"].(uint32),
-		Remark:   data["remark"].(string),
+		Name:      data["name"].(string),
+		User:      data["user"].(string),
+		Password:  data["password"].(string),
+		Host:      data["host"].(string),
+		Port:      data["port"].(uint32),
+		Charset:   data["charset"].(string),
+		Collation: data["collation"].(string),
+
+		Remark: data["remark"].(string),
 	}
 	return db.Create(&dbUser).Error
 }
