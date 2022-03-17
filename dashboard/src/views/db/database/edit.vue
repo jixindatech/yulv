@@ -29,7 +29,16 @@
       <el-form-item label="数据库端口" prop="port">
         <el-input v-model.number="formData.port" />
       </el-form-item>
-
+      <el-form-item label="字符集" prop="character">
+        <el-select v-model="formData.charset" placeholder="请选择字符集">
+          <el-option v-for="(item,index) in SQL_CHARSET" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="字符序" prop="collation">
+        <el-select v-model="formData.collation" placeholder="请选择字符序">
+          <el-option v-for="(item,index) in SQL_CHARSET" :key="index" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="备注：" prop="remark">
         <el-input v-model="formData.remark" type="textarea" />
       </el-form-item>
@@ -47,7 +56,49 @@
 
 <script>
 import { add, update } from '@/api/db'
-
+import { SQL_CHARSET } from '@/utils/const'
+import {
+  SQL_COLLATION_BIG5,
+  SQL_COLLATION_DEC8,
+  SQL_COLLATION_CP850,
+  SQL_COLLATION_HP8,
+  SQL_COLLATION_KOI8R,
+  SQL_COLLATION_LATIN1,
+  SQL_COLLATION_LATIN2,
+  SQL_COLLATION_SWE7,
+  SQL_COLLATION_ASCII,
+  SQL_COLLATION_UJIS,
+  SQL_COLLATION_SJIS,
+  SQL_COLLATION_HEBREW,
+  SQL_COLLATION_TIS620,
+  SQL_COLLATION_EUCKR,
+  SQL_COLLATION_KOI8U,
+  SQL_COLLATION_GB2312,
+  SQL_COLLATION_GREEK,
+  SQL_COLLATION_CP1250,
+  SQL_COLLATION_GBK,
+  SQL_COLLATION_LATIN5,
+  SQL_COLLATION_ARMSCII8,
+  SQL_COLLATION_UTF8,
+  SQL_COLLATION_UCS2,
+  SQL_COLLATION_CP886,
+  SQL_COLLATION_KEYBCS2,
+  SQL_COLLATION_MACCE,
+  SQL_COLLATION_MACROMAN,
+  SQL_COLLATION_CP852,
+  SQL_COLLATION_LATIN7,
+  SQL_COLLATION_UTF8MB4,
+  SQL_COLLATION_CP1251,
+  SQL_COLLATION_UTF16,
+  SQL_COLLATION_UTF16LE,
+  SQL_COLLATION_CP1256,
+  SQL_COLLATION_CP1257,
+  SQL_COLLATION_UTF32,
+  SQL_COLLATION_BINARAY,
+  SQL_COLLATION_GEOSTD8,
+  SQL_COLLATION_CP932,
+  SQL_COLLATION_EUCJPMS
+} from '@/utils/const'
 export default {
   props: {
     title: {
@@ -70,6 +121,47 @@ export default {
 
   data() {
     return {
+      SQL_CHARSET,
+      SQL_COLLATION_BIG5,
+      SQL_COLLATION_DEC8,
+      SQL_COLLATION_CP850,
+      SQL_COLLATION_HP8,
+      SQL_COLLATION_KOI8R,
+      SQL_COLLATION_LATIN1,
+      SQL_COLLATION_LATIN2,
+      SQL_COLLATION_SWE7,
+      SQL_COLLATION_ASCII,
+      SQL_COLLATION_UJIS,
+      SQL_COLLATION_SJIS,
+      SQL_COLLATION_HEBREW,
+      SQL_COLLATION_TIS620,
+      SQL_COLLATION_EUCKR,
+      SQL_COLLATION_KOI8U,
+      SQL_COLLATION_GB2312,
+      SQL_COLLATION_GREEK,
+      SQL_COLLATION_CP1250,
+      SQL_COLLATION_GBK,
+      SQL_COLLATION_LATIN5,
+      SQL_COLLATION_ARMSCII8,
+      SQL_COLLATION_UTF8,
+      SQL_COLLATION_UCS2,
+      SQL_COLLATION_CP886,
+      SQL_COLLATION_KEYBCS2,
+      SQL_COLLATION_MACCE,
+      SQL_COLLATION_MACROMAN,
+      SQL_COLLATION_CP852,
+      SQL_COLLATION_LATIN7,
+      SQL_COLLATION_UTF8MB4,
+      SQL_COLLATION_CP1251,
+      SQL_COLLATION_UTF16,
+      SQL_COLLATION_UTF16LE,
+      SQL_COLLATION_CP1256,
+      SQL_COLLATION_CP1257,
+      SQL_COLLATION_UTF32,
+      SQL_COLLATION_BINARAY,
+      SQL_COLLATION_GEOSTD8,
+      SQL_COLLATION_CP932,
+      SQL_COLLATION_EUCJPMS,
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         user: [{ required: true, message: '请输入用户', trigger: 'blur' }],
