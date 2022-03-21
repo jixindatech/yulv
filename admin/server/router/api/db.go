@@ -2,6 +2,7 @@ package api
 
 import (
 	"admin/core/log"
+	"admin/server/charset"
 	"admin/server/pkg/app"
 	"admin/server/pkg/e"
 	"admin/server/service"
@@ -31,6 +32,14 @@ func AddDB(c *gin.Context) {
 	)
 
 	err := app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = charset.ValidateCharset(form.Charset, form.Collation)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
@@ -79,6 +88,14 @@ func UpdateDB(c *gin.Context) {
 	}
 
 	err = app.BindAndValid(c, &form)
+	if err != nil {
+		httpCode = e.InvalidParams
+		errCode = e.ERROR
+		appG.Response(httpCode, errCode, err.Error(), nil)
+		return
+	}
+
+	err = charset.ValidateCharset(form.Charset, form.Collation)
 	if err != nil {
 		httpCode = e.InvalidParams
 		errCode = e.ERROR
