@@ -48,11 +48,13 @@
       <el-form-item label="数据库" prop="database">
         <el-input v-model="formData.database" maxlength="254" />
       </el-form-item>
+      <!--
       <el-form-item label="请求方式" prop="type">
         <el-select v-model="formData.type" placeholder="请选择请求方式">
           <el-option v-for="(item,index) in SQL_TYPE_OPTIONS" :key="index" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
+      -->
       <el-form-item label="规则水印" prop="sql">
         <el-input v-model="formData.sql" maxlength="254" />
       </el-form-item>
