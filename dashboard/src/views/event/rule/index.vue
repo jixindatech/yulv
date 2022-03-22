@@ -45,7 +45,11 @@
       <el-table-column align="center" prop="_source.user" label="数据库用户" />
       <el-table-column align="center" prop="_source.database" label="数据库" />
       <el-table-column align="center" prop="_source.event" label="事件类型" />
-      <el-table-column align="center" prop="_source.sqltype" label="请求类型" />
+      <el-table-column align="center" label="请求类型">
+        <template slot-scope="scope">
+          <el-input :value="SQL_CMD_OPTIONS[scope.row._source.cmd]" />
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="_source.sql" label="请求内容" />
       <el-table-column align="center" prop="_source.fingerprint" label="请求水印" />
       <el-table-column align="center" prop="_source.rows" label="影响行数" />
@@ -70,9 +74,11 @@
 
 <script>
 import { getRuleList } from '@/api/event'
+import { SQL_CMD_OPTIONS } from '@/utils/const'
 export default {
   data() {
     return {
+      SQL_CMD_OPTIONS,
       queryTime: [],
       query: {},
       pickerOptions: {
